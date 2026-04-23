@@ -2,7 +2,9 @@ package PaooGame;
 
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Graphics.Assets;
+import PaooGame.KeyImput.InputTaste;
 import PaooGame.Tiles.Tile;
+import PaooGame.Characters.MC;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -42,10 +44,12 @@ import java.awt.image.BufferStrategy;
  */
 public class Game implements Runnable
 {
+    private MC player;
     private GameWindow      wnd;        /*!< Fereastra in care se va desena tabla jocului*/
     private boolean         runState;   /*!< Flag ce starea firului de executie.*/
     private Thread          gameThread; /*!< Referinta catre thread-ul de update si draw al ferestrei*/
     private BufferStrategy  bs;         /*!< Referinta catre un mecanism cu care se organizeaza memoria complexa pentru un canvas.*/
+    private InputTaste keyInput = new InputTaste();
     /// Sunt cateva tipuri de "complex buffer strategies", scopul fiind acela de a elimina fenomenul de
     /// flickering (palpaire) a ferestrei.
     /// Modul in care va fi implementata aceasta strategie in cadrul proiectului curent va fi triplu buffer-at
@@ -92,11 +96,13 @@ public class Game implements Runnable
      */
     private void InitGame()
     {
-        wnd = new GameWindow("Schelet Proiect PAOO", 800, 600);
-            /// Este construita fereastra grafica.
+        player = new MC("Erou", 100, 100, keyInput);
+
         wnd.BuildGameWindow();
             /// Se incarca toate elementele grafice (dale)
+        wnd.GetCanvas().addKeyListener(keyInput);
         Assets.Init();
+
     }
 
     /*! \fn public void run()
@@ -197,6 +203,8 @@ public class Game implements Runnable
      */
     private void Update()
     {
+        player.update();
+
 
     }
 
@@ -227,6 +235,7 @@ public class Game implements Runnable
         }
             /// Se obtine contextul grafic curent in care se poate desena.
         g = bs.getDrawGraphics();
+
             /// Se sterge ce era
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
 
@@ -243,6 +252,7 @@ public class Game implements Runnable
 
             // end operatie de desenare
             /// Se afiseaza pe ecran
+        player.draw(g);
         bs.show();
 
             /// Elibereaza resursele de memorie aferente contextului grafic curent (zonele de memorie ocupate de
