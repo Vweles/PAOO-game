@@ -1,5 +1,4 @@
 package PaooGame.Tiles;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -54,9 +53,9 @@ public class Tile
         \param x Coordonata x in cadrul ferestrei unde sa fie desenata dala
         \param y Coordonata y in cadrul ferestrei unde sa fie desenata dala
      */
-    public void Draw(Graphics g, int x, int y)
-    {
-            /// Desenare dala
+    // În Tile.java, modifică metoda Draw:
+    public void Draw(Graphics g, int x, int y) {
+        // Grafica2D face automat translate si scale acum, asa ca desenam normal!
         g.drawImage(img, x, y, TILE_WIDTH, TILE_HEIGHT, null);
     }
 

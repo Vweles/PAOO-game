@@ -1,4 +1,5 @@
 package PaooGame.Characters;
+import java.awt.Rectangle;
 
 public class Entity {
     public String nume;
@@ -24,6 +25,10 @@ public class Entity {
     public static final int HEAD = 4;
 
     public boolean[] limbsStatus = {true, true, true, true, true};
+
+    public Rectangle solidArea;
+    public boolean collisionOn = false;
+    public String directie = "down"; // Mutata aici din MC.java
 
     public Entity(String NUME, int STR, int INTE, int AGI, int THO, int LIMBS_n, int LIMBS_at, int LVL, int x, int y, int speed) {
         this.nume = NUME;
