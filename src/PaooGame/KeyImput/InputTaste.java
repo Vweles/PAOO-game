@@ -4,7 +4,8 @@ import java.awt.event.KeyListener;
 
 public class InputTaste implements KeyListener {
 
-    public boolean up, down, left, right, attack, crawl;
+    // Am adaugat variabila 'enter' la final
+    public boolean up, down, left, right, attack, crawl, enter;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -32,6 +33,7 @@ public class InputTaste implements KeyListener {
             crawl = !crawl;
             System.out.println("Crawl state: " + crawl);
         }
+        if (code == KeyEvent.VK_ENTER) enter = true;
     }
 
     @Override
@@ -43,6 +45,6 @@ public class InputTaste implements KeyListener {
         if (code == KeyEvent.VK_A) left = false;
         if (code == KeyEvent.VK_D) right = false;
         if (code == KeyEvent.VK_K) attack = false;
-
+        if (code == KeyEvent.VK_ENTER) enter = false;
     }
 }
