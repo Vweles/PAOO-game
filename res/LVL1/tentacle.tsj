@@ -1,0 +1,14 @@
+{ "columns":9,
+ "image":"..\/..\/..\/AsetsDownload\/CRAWLING DEPTHS\/Creatures\/Tentacle 1 Sheet.png",
+ "imageheight":64,
+ "imagewidth":288,
+ "margin":0,
+ "name":"tentacle",
+ "spacing":0,
+ "tilecount":18,
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":"1.10"
+}

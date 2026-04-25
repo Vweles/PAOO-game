@@ -1,0 +1,14 @@
+{ "columns":2,
+ "image":"..\/..\/..\/AsetsDownload\/CRAWLING DEPTHS\/Terrain\/Cliff.png",
+ "imageheight":112,
+ "imagewidth":80,
+ "margin":0,
+ "name":"tilenul",
+ "spacing":0,
+ "tilecount":6,
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":"1.10"
+}
