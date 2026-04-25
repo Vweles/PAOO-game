@@ -23,7 +23,7 @@ public class UIImageButton {
     }
 
     public void Update(int mouseX, int mouseY, boolean leftPressed) {
-        // Verificam daca mouse-ul este in "hitBox"
+
         hovering = (bounds != null && bounds.contains(mouseX, mouseY));
 
         if (hovering && leftPressed && onClick != null) {

@@ -15,11 +15,12 @@ public class GameCamera {
     }
 
     public void centerOnEntity(Entity e) {
-        // Calculăm unde ar trebui să fie camera pentru a centra entitatea
+        // eu ma gandeam sa facem camera de aia de e totu mic si dam zoom pe player si merge asa da e mai bine asa cu bila de paianjen
+
         float targetX = e.x * zoom - (windowWidth / 2f) + (24 * zoom);
         float targetY = e.y * zoom - (windowHeight / 2f) + (24 * zoom);
 
-        // Smoothing: camera nu se teleportează, ci "alunecă" spre țintă (0.1f = viteza)
+
         xOffset += (targetX - xOffset) * 0.1f;
         yOffset += (targetY - yOffset) * 0.1f;
     }

@@ -1,25 +1,30 @@
 package PaooGame.Tiles;
+import PaooGame.Graphics.Assets;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.Graphics;
 
 /*! \class public class Tile
     \brief Retine toate dalele intr-un vector si ofera posibilitatea regasirii dupa un id.
  */
 public class Tile
 {
-    private static final int NO_TILES   = 32;
+    private static final int NO_TILES   = 256;
     public static Tile[] tiles          = new Tile[NO_TILES];       /*!< Vector de referinte de tipuri de dale.*/
 
         /// De remarcat ca urmatoarele dale sunt statice si publice. Acest lucru imi permite sa le am incarcate
         /// o singura data in memorie
     public static Tile grassTile        = new GrassTile(0);     /*!< Dala de tip iarba*/
-    public static Tile mountainTile     = new MountainTile(1);  /*!< Dala de tip munte/piatra*/
-    public static Tile waterTile        = new WaterTile(2);     /*!< Dala de tip apa*/
-    public static Tile treeTile         = new TreeTile(3);      /*!< Dala de tip copac*/
-    public static Tile soilTile         = new SoilTile(4);      /*!< Dala de tip sol/pamant*/
-
-    public static final int TILE_WIDTH  = 48;                       /*!< Latimea unei dale.*/
-    public static final int TILE_HEIGHT = 48;                       /*!< Inaltimea unei dale.*/
+    //public static Tile mountainTile     = new MountainTile(1);  /*!< Dala de tip munte/piatra*/
+    //public static Tile waterTile        = new WaterTile(2);     /*!< Dala de tip apa*/
+    //public static Tile treeTile         = new TreeTile(3);      /*!< Dala de tip copac*/
+    //public static Tile soilTile         = new SoilTile(4);      /*!< Dala de tip sol/pamant*/
+    public static  Tile ground = new WorldTile(Assets.Tile1,1,false);
+    public static Tile Wall = new WorldTile(Assets.Wall,5,true);
+    public static Tile Abis = new WorldTile(Assets.Abis,7,false);
+    public static final int TILE_WIDTH  = 32;                       /*!< Latimea unei dale.*/
+    public static final int TILE_HEIGHT = 32;                       /*!< Inaltimea unei dale.*/
 
     protected BufferedImage img;                                    /*!< Imaginea aferenta tipului de dala.*/
     protected final int id;                                         /*!< Id-ul unic aferent tipului de dala.*/
@@ -53,9 +58,9 @@ public class Tile
         \param x Coordonata x in cadrul ferestrei unde sa fie desenata dala
         \param y Coordonata y in cadrul ferestrei unde sa fie desenata dala
      */
-    // În Tile.java, modifică metoda Draw:
+
     public void Draw(Graphics g, int x, int y) {
-        // Grafica2D face automat translate si scale acum, asa ca desenam normal!
+
         g.drawImage(img, x, y, TILE_WIDTH, TILE_HEIGHT, null);
     }
 

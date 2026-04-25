@@ -11,7 +11,7 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 
     public MouseManager() { }
 
-    // Metode pentru miscare
+
     @Override
     public void mouseMoved(MouseEvent e) {
         mouseX = e.getX();
@@ -20,12 +20,12 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        // Se updateaza coordonatele si cand tii apasat si tragi
+
         mouseX = e.getX();
         mouseY = e.getY();
     }
 
-    // Metode pentru click
+
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) leftPressed = true;  // Click Stanga
@@ -38,7 +38,6 @@ public class MouseManager implements MouseListener, MouseMotionListener {
         if (e.getButton() == MouseEvent.BUTTON3) rightPressed = false;
     }
 
-    // Nu le folosim momentan, dar trebuie declarate
     @Override public void mouseClicked(MouseEvent e) { }
     @Override public void mouseEntered(MouseEvent e) { }
     @Override public void mouseExited(MouseEvent e) { }

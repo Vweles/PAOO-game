@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 
 public class Assets
 {
-    public static final int FRAME_SIZE = 48;
+    public static final int FRAME_SIZE = 32;
 
 
     public static BufferedImage soil;
@@ -20,6 +20,13 @@ public class Assets
     public static BufferedImage rockLeft;
     public static BufferedImage rockRight;
     public static BufferedImage tree;
+    public static  BufferedImage Abis;
+    public static  BufferedImage Tile1;
+    public static  BufferedImage Wall;
+    // invata cum se implementeaza astea de deasupra
+    public static  BufferedImage endDf;
+    public static  BufferedImage endAf;
+    public static  BufferedImage tent;
 
 
     public static BufferedImage[] walkDown  = new BufferedImage[11];
@@ -52,6 +59,30 @@ public class Assets
     */
     public static void Init()
     {
+        SpriteSheet baseTiles = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/abyss_tile.png"));
+        Abis = baseTiles.crop(0, 0); // Ajustează x, y după poziția în PNG
+
+
+        SpriteSheet GrndT = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Tiles.png"));
+        Tile1 = GrndT.crop(0, 0);
+
+
+        SpriteSheet wall = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Cracks.png"));
+        Wall = wall.crop(0, 0);
+
+
+        SpriteSheet TNETT = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Tentacle 1 Sheet.png"));
+        tent = TNETT.crop(0, 0);
+
+
+        SpriteSheet eldritchDSheet = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Eldritch Entity Dormant.png"));
+        //endDf = eldritchDSheet.getSubimage(0, 0, 3 * 32, 6 * 32);
+
+//B aici e grava sa mor eu nush cum fac sau ce sa fac da e grava
+        SpriteSheet tentacleASheet = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Eldritch Entity Awaken.png"));
+        //endAf = tentacleASheet.getSubimage(0, 0, 3 * 32, 6 * 32);
+
+
         SpriteSheet sheet = new SpriteSheet(
                 ImageLoader.LoadImage("/textures/PaooGameSpriteSheet.png")
         );
@@ -118,12 +149,7 @@ public class Assets
         playerCrawlRight = crawlRight[0];
     }
 
-    /**
-     * Crops a 48x48 frame from the character sprite sheet.
-     * @param sheet  the SpriteSheet wrapping the character PNG
-     * @param col    column index (0-based)
-     * @param row    row index (0-based)
-     */
+
     private static BufferedImage cropChar(SpriteSheet sheet, int col, int row)
     {
 
