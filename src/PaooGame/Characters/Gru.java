@@ -24,7 +24,7 @@ public class Gru extends Inamic {
         target.hp = target.hp - damage;
         System.out.println("BOSSULICAAAAAAAAAAAA " + this.nume + " a dat SPECIALA" + damage + " damage!");
     }
-    // NU UITA CA LA FINAL DUPA CE TE DISTREZI CU CODU SA MAI SCRII SI CORECT ANALFABETULE
+  
     //Schimba aici in cv normal
 
     // cauta cum sa aiba 2 faza 1 faza full  hp 2 faza juma hp

@@ -29,16 +29,15 @@ public class Assets
     public static  BufferedImage tent;
 
 
-    public static BufferedImage[] walkDown  = new BufferedImage[11];
-    public static BufferedImage[] walkLeft  = new BufferedImage[11];
-    public static BufferedImage[] walkRight = new BufferedImage[11];
-    public static BufferedImage[] walkUp    = new BufferedImage[11];
+    public static BufferedImage[] walkDown  = new BufferedImage[3];
+    public static BufferedImage[] walkLeft  = new BufferedImage[3];
+    public static BufferedImage[] walkRight = new BufferedImage[3];
+    public static BufferedImage[] walkUp    = new BufferedImage[3];
 
-
-    public static BufferedImage[] crawlDown  = new BufferedImage[6];
-    public static BufferedImage[] crawlLeft  = new BufferedImage[6];
-    public static BufferedImage[] crawlRight = new BufferedImage[6];
-    public static BufferedImage[] crawlUp    = new BufferedImage[6];
+    public static BufferedImage[] crawlDown  = new BufferedImage[2];
+    public static BufferedImage[] crawlLeft  = new BufferedImage[2];
+    public static BufferedImage[] crawlRight = new BufferedImage[2];
+    public static BufferedImage[] crawlUp    = new BufferedImage[2];
 
 
     /** @deprecated Use walkLeft[0] / walkLeft[1] instead */
@@ -76,11 +75,12 @@ public class Assets
 
 
         SpriteSheet eldritchDSheet = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Eldritch Entity Dormant.png"));
-        //endDf = eldritchDSheet.getSubimage(0, 0, 3 * 32, 6 * 32);
+        endDf = eldritchDSheet.crop(0, 0, 96, 192); // 3*32 latime, 6*32 inaltime
 
-//B aici e grava sa mor eu nush cum fac sau ce sa fac da e grava
         SpriteSheet tentacleASheet = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Eldritch Entity Awaken.png"));
-        //endAf = tentacleASheet.getSubimage(0, 0, 3 * 32, 6 * 32);
+        endAf = tentacleASheet.crop(0, 0, 96, 192);
+
+
 
 
         SpriteSheet sheet = new SpriteSheet(
@@ -105,41 +105,15 @@ public class Assets
                 ImageLoader.LoadImage("/MC/2.png")
         );
 
-        //nui bine
-        for (int i = 0; i < 11; i++)
-            walkDown[i] = cropChar(charSheet, i, 0);
+        for (int i = 0; i < 3; i++) walkDown[i] = cropChar(charSheet, i, 0);
+        for (int i = 0; i < 3; i++) walkRight[i] = cropChar(charSheet, i, 1);
+        for (int i = 0; i < 3; i++) walkLeft[i] = cropChar(charSheet, i, 2);
+        for (int i = 0; i < 3; i++) walkUp[i] = cropChar(charSheet, i, 3);
 
-       //nu bine
-        for (int i = 0; i < 11; i++)
-            walkRight[i] = cropChar(charSheet, i, 1);
-
-        // nui bine
-        for (int i = 0; i < 11; i++)
-            walkLeft[i] = cropChar(charSheet, i, 2);
-
-        // Rnui bine
-        for (int i = 0; i < 11; i++)
-            walkUp[i] = cropChar(charSheet, i, 3);
-
-        // Rnui bine
-        for (int i = 0; i < 6; i++)
-            crawlDown[i] = cropChar(charSheet, i, 4);
-
-        // nui bine
-        for (int i = 0; i < 6; i++)
-            crawlRight[i] = cropChar(charSheet, i, 5);
-
-        // inverted
-        for (int i = 0; i < 6; i++)
-            crawlLeft[i] = cropChar(charSheet, i, 6);
-
-        // nui bine
-        for (int i = 0; i < 6; i++)
-            crawlUp[i] = cropChar(charSheet, i, 7);
-
-        //e prea multe pt fiecare trebe doar 1 max 2 pnguri de acolo ca leam pus pe toate
-        // poti sa dai la ai ca din tot vectoru ala  tre sa alegem 2 max 3 pas stanga pas dreapta
-
+        crawlDown[0] = cropChar(charSheet, 0, 4);
+        crawlRight[0] = cropChar(charSheet, 1, 5);
+        crawlLeft[0] = cropChar(charSheet, 0, 6);
+        crawlUp[0] = cropChar(charSheet, 1, 7);
 
         playerDown       = walkDown[0];
         playerLeft       = walkLeft[0];
@@ -152,7 +126,8 @@ public class Assets
 
     private static BufferedImage cropChar(SpriteSheet sheet, int col, int row)
     {
-
-         return sheet.crop(col, row);
+        // În loc de sheet.crop(col, row); folosim noua metodă.
+        // Daca personajul e decupat inca greșit, schimbă 48, 48 in 64, 64 sau dimensiunea reală a PNG-ului.
+        return sheet.crop(col, row, 48, 48);
     }
 }
