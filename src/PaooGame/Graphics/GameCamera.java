@@ -1,38 +1,32 @@
 package PaooGame.Graphics;
 
-import PaooGame.Characters.Entity;
+import PaooGame.Characters.MC;
 
 public class GameCamera {
     private float xOffset, yOffset;
-    private int windowWidth, windowHeight;
-    private float zoom = 2.0f;
+    private float zoom = 1.0f;
+    private int wndWidth, wndHeight;
 
-    public GameCamera(int windowWidth, int windowHeight) {
-        this.windowWidth = windowWidth;
-        this.windowHeight = windowHeight;
-        xOffset = 0;
-        yOffset = 0;
+    public GameCamera(int wndWidth, int wndHeight) {
+        this.wndWidth = wndWidth;
+        this.wndHeight = wndHeight;
     }
 
-    public void centerOnEntity(Entity e) {
-        // eu ma gandeam sa facem camera de aia de e totu mic si dam zoom pe player si merge asa da e mai bine asa cu bila de paianjen
-
-        float targetX = e.x * zoom - (windowWidth / 2f) + (24 * zoom);
-        float targetY = e.y * zoom - (windowHeight / 2f) + (24 * zoom);
-
-
-        xOffset += (targetX - xOffset) * 0.1f;
-        yOffset += (targetY - yOffset) * 0.1f;
+    public void centerOnEntity(MC e) {
+        // Centrare pe erou
+        xOffset = e.getX() - (wndWidth / (2 * zoom)) + 16;
+        yOffset = e.getY() - (wndHeight / (2 * zoom)) + 16;
     }
 
-    public void checkBlankSpace(int mapWidthPixels, int mapHeightPixels) {
+    public void checkBlankSpace(int worldWidth, int worldHeight) {
         if (xOffset < 0) xOffset = 0;
         if (yOffset < 0) yOffset = 0;
-        if (xOffset > mapWidthPixels * zoom - windowWidth) xOffset = mapWidthPixels * zoom - windowWidth;
-        if (yOffset > mapHeightPixels * zoom - windowHeight) yOffset = mapHeightPixels * zoom - windowHeight;
+        if (xOffset > worldWidth - (wndWidth / zoom)) xOffset = worldWidth - (wndWidth / zoom);
+        if (yOffset > worldHeight - (wndHeight / zoom)) yOffset = worldHeight - (wndHeight / zoom);
     }
 
+    public void setZoom(float zoom) { this.zoom = zoom; }
+    public float getZoom() { return zoom; }
     public float getxOffset() { return xOffset; }
     public float getyOffset() { return yOffset; }
-    public float getZoom() { return zoom; }
 }

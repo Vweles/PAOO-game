@@ -5,67 +5,59 @@ import PaooGame.Map.Map;
 import PaooGame.Tiles.Tile;
 
 public class CollisionChecker {
-
     private Map map;
-
 
     public CollisionChecker(Map map) {
         this.map = map;
     }
 
     public void checkTile(Entity entity) {
+        // Luam marginile solidArea (hitbox)
+        int entityLeftWorldX = (int) (entity.x + entity.solidArea.x);
+        int entityRightWorldX = (int) (entity.x + entity.solidArea.x + entity.solidArea.width);
+        int entityTopWorldY = (int) (entity.y + entity.solidArea.y);
+        int entityBottomWorldY = (int) (entity.y + entity.solidArea.y + entity.solidArea.height);
 
-        int entityLeftWorldX = entity.x + entity.solidArea.x;
-        int entityRightWorldX = entity.x + entity.solidArea.x + entity.solidArea.width - 1;
-        int entityTopWorldY = entity.y + entity.solidArea.y;
-        int entityBottomWorldY = entity.y + entity.solidArea.y + entity.solidArea.height - 1;
-
-
-        int entityLeftCol = entityLeftWorldX / Tile.TILE_WIDTH;
-        int entityRightCol = entityRightWorldX / Tile.TILE_WIDTH;
-        int entityTopRow = entityTopWorldY / Tile.TILE_HEIGHT;
-        int entityBottomRow = entityBottomWorldY / Tile.TILE_HEIGHT;
-
-        int tileNum1, tileNum2;
-
+        int col1, col2, row1, row2;
 
         switch (entity.directie) {
             case "up":
-                entityTopRow = (entityTopWorldY - entity.speed) / Tile.TILE_HEIGHT;
-
-                tileNum1 = map.getTileID(entityLeftCol, entityTopRow);
-                tileNum2 = map.getTileID(entityRightCol, entityTopRow);
-                if (Tile.tiles[tileNum1].IsSolid() || Tile.tiles[tileNum2].IsSolid()) {
+                row1 = (entityTopWorldY - entity.speed) / Tile.TILE_WIDTH;
+                col1 = entityLeftWorldX / Tile.TILE_WIDTH;
+                col2 = entityRightWorldX / Tile.TILE_WIDTH;
+                if (isSolid(map.getTileID(col1, row1)) || isSolid(map.getTileID(col2, row1))) {
                     entity.collisionOn = true;
                 }
                 break;
             case "down":
-                entityBottomRow = (entityBottomWorldY + entity.speed) / Tile.TILE_HEIGHT;
-
-                tileNum1 = map.getTileID(entityLeftCol, entityBottomRow);
-                tileNum2 = map.getTileID(entityRightCol, entityBottomRow);
-                if (Tile.tiles[tileNum1].IsSolid() || Tile.tiles[tileNum2].IsSolid()) {
+                row1 = (entityBottomWorldY + entity.speed) / Tile.TILE_WIDTH;
+                col1 = entityLeftWorldX / Tile.TILE_WIDTH;
+                col2 = entityRightWorldX / Tile.TILE_WIDTH;
+                if (isSolid(map.getTileID(col1, row1)) || isSolid(map.getTileID(col2, row1))) {
                     entity.collisionOn = true;
                 }
                 break;
             case "left":
-                entityLeftCol = (entityLeftWorldX - entity.speed) / Tile.TILE_WIDTH;
-
-                tileNum1 = map.getTileID(entityLeftCol, entityTopRow);
-                tileNum2 = map.getTileID(entityLeftCol, entityBottomRow);
-                if (Tile.tiles[tileNum1].IsSolid() || Tile.tiles[tileNum2].IsSolid()) {
+                col1 = (entityLeftWorldX - entity.speed) / Tile.TILE_WIDTH;
+                row1 = entityTopWorldY / Tile.TILE_WIDTH;
+                row2 = entityBottomWorldY / Tile.TILE_WIDTH;
+                if (isSolid(map.getTileID(col1, row1)) || isSolid(map.getTileID(col1, row2))) {
                     entity.collisionOn = true;
                 }
                 break;
             case "right":
-                entityRightCol = (entityRightWorldX + entity.speed) / Tile.TILE_WIDTH;
-
-                tileNum1 = map.getTileID(entityRightCol, entityTopRow);
-                tileNum2 = map.getTileID(entityRightCol, entityBottomRow);
-                if (Tile.tiles[tileNum1].IsSolid() || Tile.tiles[tileNum2].IsSolid()) {
+                col1 = (entityRightWorldX + entity.speed) / Tile.TILE_WIDTH;
+                row1 = entityTopWorldY / Tile.TILE_WIDTH;
+                row2 = entityBottomWorldY / Tile.TILE_WIDTH;
+                if (isSolid(map.getTileID(col1, row1)) || isSolid(map.getTileID(col1, row2))) {
                     entity.collisionOn = true;
                 }
                 break;
         }
+    }
+
+    // Verificam direct ID-urile de wall (6) si abis (1)
+    private boolean isSolid(int id) {
+        return (id == 6 || id == 1);
     }
 }

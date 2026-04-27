@@ -20,9 +20,9 @@ public class Tile
     //public static Tile waterTile        = new WaterTile(2);     /*!< Dala de tip apa*/
     //public static Tile treeTile         = new TreeTile(3);      /*!< Dala de tip copac*/
     //public static Tile soilTile         = new SoilTile(4);      /*!< Dala de tip sol/pamant*/
-    public static  Tile ground = new WorldTile(Assets.Tile1,1,false);
-    public static Tile Wall = new WorldTile(Assets.Wall,5,true);
-    public static Tile Abis = new WorldTile(Assets.Abis,7,false);
+    public static  Tile ground = new WorldTile(Assets.Tile1,2,false);
+    public static Tile Wall = new WorldTile(Assets.Wall,6,true);
+    public static Tile Abis = new WorldTile(Assets.Abis,1,true);
     public static final int TILE_WIDTH  = 32;                       /*!< Latimea unei dale.*/
     public static final int TILE_HEIGHT = 32;                       /*!< Inaltimea unei dale.*/
 
@@ -67,8 +67,13 @@ public class Tile
     /*! \fn public boolean IsSolid()
         \brief Returneaza proprietatea de dala solida (supusa coliziunilor) sau nu.
      */
-    public boolean IsSolid()
-    {
+
+    // Modifica in Tile.java sau in clasele derivate (WallTile, WorldTile)
+    public boolean IsSolid() {
+        // Daca ID-ul este 6 (Wall in TMJ-ul tau) sau 1 (Abis), returneaza true
+        if (this.id == 6 || this.id == 1) {
+            return true;
+        }
         return false;
     }
 

@@ -126,8 +126,7 @@ public class Assets
 
     private static BufferedImage cropChar(SpriteSheet sheet, int col, int row)
     {
-        // În loc de sheet.crop(col, row); folosim noua metodă.
-        // Daca personajul e decupat inca greșit, schimbă 48, 48 in 64, 64 sau dimensiunea reală a PNG-ului.
+
         return sheet.crop(col, row, 48, 48);
     }
 }
