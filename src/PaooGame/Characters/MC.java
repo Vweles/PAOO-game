@@ -10,26 +10,30 @@ public class MC extends Entity {
     private InputTaste keyInput;
     private int animIndex = 0;
     private int speedCounter = 0;
-    private final int ANIM_SPEED = 10;
+    private final int ANIM_SPEED = 12;
 
     public MC(String NUME, int x, int y, InputTaste keyInput) {
         super(NUME, 12, 10, 15, 10, 4, 2, 1, x, y, 4);
         this.keyInput = keyInput;
-        this.solidArea = new Rectangle(12, 20, 24, 24);
+        this.solidArea = new Rectangle(12, 24, 24, 20);
     }
+    public float getX() { return x; }
+    public float getY() { return y; }
 
+    // REPARAT: Numele metodei trebuie să fie EXACT "update" (cu 'u' mic)
+    // dacă așa este în clasa Entity, și trebuie să aibă @Override
     @Override
     public void update(CollisionChecker checker) {
         boolean isMoving = false;
 
-        // Setam directia si verificam daca se misca
         if (keyInput.up) { directie = "up"; isMoving = true; }
         else if (keyInput.down) { directie = "down"; isMoving = true; }
         else if (keyInput.left) { directie = "left"; isMoving = true; }
         else if (keyInput.right) { directie = "right"; isMoving = true; }
 
+        this.speed = (keyInput.crawl) ? 1 : 3;
+
         collisionOn = false;
-        // Folosim checker-ul primit ca parametru in metoda update
         checker.checkTile(this);
 
         if (!collisionOn && isMoving) {
@@ -39,7 +43,6 @@ public class MC extends Entity {
             if (directie.equals("right")) x += speed;
         }
 
-        // Animatie
         if (isMoving) {
             speedCounter++;
             if (speedCounter >= ANIM_SPEED) {
@@ -51,41 +54,30 @@ public class MC extends Entity {
         } else {
             animIndex = 0;
         }
-
-        // Viteza
-        if (keyInput.crawl || !limbsStatus[R_LEG] || !limbsStatus[L_LEG]) {
-            this.speed = 1;
-        } else {
-            this.speed = 2 + agi / 5;
-        }
     }
 
     @Override
     public void draw(Graphics g) {
+        // Implementare de bază cerută de Entity
+    }
+
+    // Metoda ta custom de desenare cu Camera
+    public void Draw(Graphics g, int cameraX, int cameraY) {
         BufferedImage frame = null;
         if (keyInput.crawl) {
-            switch (directie) {
-                case "up": frame = Assets.crawlUp[animIndex % 2]; break;
-                case "down": frame = Assets.crawlDown[animIndex % 2]; break;
-                case "left": frame = Assets.crawlLeft[animIndex % 2]; break;
-                case "right": frame = Assets.crawlRight[animIndex % 2]; break;
-                default: frame = Assets.crawlDown[0]; break;
-            }
+            if (directie.equals("up")) frame = Assets.crawlUp[animIndex % 2];
+            else if (directie.equals("down")) frame = Assets.crawlDown[animIndex % 2];
+            else if (directie.equals("left")) frame = Assets.crawlLeft[animIndex % 2];
+            else if (directie.equals("right")) frame = Assets.crawlRight[animIndex % 2];
         } else {
-            switch (directie) {
-                case "up": frame = Assets.walkUp[animIndex % 3]; break;
-                case "down": frame = Assets.walkDown[animIndex % 3]; break;
-                case "left": frame = Assets.walkLeft[animIndex % 3]; break;
-                case "right": frame = Assets.walkRight[animIndex % 3]; break;
-                default: frame = Assets.walkDown[0]; break;
-            }
+            if (directie.equals("up")) frame = Assets.walkUp[animIndex % 3];
+            else if (directie.equals("down")) frame = Assets.walkDown[animIndex % 3];
+            else if (directie.equals("left")) frame = Assets.walkLeft[animIndex % 3];
+            else if (directie.equals("right")) frame = Assets.walkRight[animIndex % 3];
         }
 
         if (frame != null) {
-            g.drawImage(frame, (int)x, (int)y, 48, 48, null);
+            g.drawImage(frame, (int)x - cameraX, (int)y - cameraY, 48, 48, null);
         }
     }
-
-    public float getX() { return x; }
-    public float getY() { return y; }
 }

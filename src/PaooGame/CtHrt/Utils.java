@@ -5,7 +5,7 @@ package PaooGame.CtHrt;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-// nush ce sa zic ca am distrus putin harta da mna merge vezi ca e mare soft lock ca is idiot da tre sa schimb numa mapa.txt si gata
+
 
 public class Utils {
     public static String loadFileAsString(String path) {

@@ -4,7 +4,7 @@ import java.awt.event.KeyListener;
 
 public class InputTaste implements KeyListener {
 
-    // Am adaugat variabila 'enter' la final
+
     public boolean up, down, left, right, attack, crawl, enter;
 
     @Override
@@ -20,15 +20,11 @@ public class InputTaste implements KeyListener {
         if (code == KeyEvent.VK_S) down = true;
         if (code == KeyEvent.VK_A) left = true;
         if (code == KeyEvent.VK_D) right = true;
-        //o sa mai agaugam si pt
-        //drink potiune
-        //interact cu cv
 
-        // vezi ca la asta tre sa fie gen atack adica cu  cv magie fireball nebunii de astea
+
         if (code == KeyEvent.VK_K) attack = true;
 
-        // am   pe spite sheeiit si de astea de crawl o sa fie folosite sa dea el crawl sau daca esti dragut si mai incolo adaugi cand isi pierde picioarele
-        // sau un picior da crawl
+
         if (code == KeyEvent.VK_C) {
             crawl = !crawl;
             System.out.println("Crawl state: " + crawl);
@@ -46,5 +42,13 @@ public class InputTaste implements KeyListener {
         if (code == KeyEvent.VK_D) right = false;
         if (code == KeyEvent.VK_K) attack = false;
         if (code == KeyEvent.VK_ENTER) enter = false;
+    }
+
+    public boolean isEnterPressed() {
+        if (enter) {
+            enter = false;
+            return true;
+        }
+        return false;
     }
 }

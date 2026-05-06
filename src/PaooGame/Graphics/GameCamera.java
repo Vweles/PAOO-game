@@ -13,7 +13,7 @@ public class GameCamera {
     }
 
     public void centerOnEntity(MC e) {
-        // Centrare pe erou
+
         xOffset = e.getX() - (wndWidth / (2 * zoom)) + 16;
         yOffset = e.getY() - (wndHeight / (2 * zoom)) + 16;
     }

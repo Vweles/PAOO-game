@@ -13,8 +13,7 @@ public abstract class Entity {
     public int x, y;
     public int speed;
 
-   // vezi ca am bulit aici da cred ca sa reparat
-    // urasc coliziunile astea nesimtite
+
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48); // Zona de coliziune (ajustabilă)
     public boolean collisionOn = false;
     public String directie = "down";

@@ -20,11 +20,11 @@ public class Npc extends Entity {
 
     @Override
     public void update(CollisionChecker checker) {
-        // nush cum fac aici nush cum sa fac de astea de miscare etc
+
     }
 
     @Override
     public void draw(Graphics g) {
-        // la final de weekend promit ca termin macar inamicii pt lvl1 promit
+
     }
 }

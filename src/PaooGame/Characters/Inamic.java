@@ -24,6 +24,6 @@ public class Inamic extends Npc {
 
     @Override
     public void update(CollisionChecker checker) {
-        // din nou habarnam cum fac uc agresivitatea asta cum sal urmareasca gen da ma rog
+
     }
 }

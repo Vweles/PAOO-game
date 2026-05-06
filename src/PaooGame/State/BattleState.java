@@ -45,39 +45,33 @@ public class BattleState extends State {
         switch (currentCommand) {
             case 0:
                 System.out.println("Deschidem submeniul de atacuri......");
-                // o sa fie un submeniu cu casete in fiecare cateraw e cate o de aia un ability si o scurta descrierede gen
-                // Fireball
-                //7+(int/3) DMG
-                // o sa fie cv de genu
+
                 break;
             case 1:
                 System.out.println("Potiune folosita!");
                 break;
             case 2:
                 System.out.println("Ai fugit!");
-                // aici nush ce sa zic cum sa facem ca mie sa nu fie de ala dai run te intorci la state de explorare si dupa intri iar in state de battle
-                // ca esti prea aproape
-                // idk aici tre sa punem capu la gandire putin cu cum facem
+
                 break;
         }
     }
 
     @Override
     public void Draw(Graphics g) {
-        // aici la fundal am  facut asa la misto unu random  da am niste fundaluri de pe itch cred ca pun azi tot pe resurse si vedem care se potriveste
+
         g.setColor(new Color(20, 20, 20));
         g.fillRect(0, 0, 800, 600);
-        // ba deci hai sa facem pact de fiecare data cand hardcodam cv il lasam asa basic si punem de asta comentariu si la final cand facem patching
-        // facem niste variabile ca astea  o sa fie din meniu gen iti alegi rezolutia
+
 
         drawBattleUI(g);
     }
 
     private void drawBattleUI(Graphics g) {
-       // asta e asa la misto ca am gasit niste asseturi misto pe itch da nush cum sa le fac sudura aici in cod
+
         g.setColor(Color.WHITE);
         g.drawRect(30, 400, 740, 160);
-// ba deci am gasit un font asa de misto e asa gen horror si e gen vechi cu litere asa ghosty etc ba deci e misto rau da tre sa caut cum le pun
+
         g.setFont(new Font("Monospaced", Font.BOLD, 28));
 
         for (int i = 0; i < mainCommands.length; i++) {
@@ -90,7 +84,7 @@ public class BattleState extends State {
             }
         }
 
-        // am pus asa un cv la misto sa vad daca merge
+
         g.setColor(Color.GRAY);
         g.fillRect(300, 100, 200, 250);
         g.setColor(Color.WHITE);
