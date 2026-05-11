@@ -59,5 +59,5 @@ public abstract class Entity {
     }
 
     public abstract void update(CollisionChecker checker);
-    public abstract void draw(Graphics g);
+    public abstract void draw(Graphics g, int cameraX, int cameraY);
 }

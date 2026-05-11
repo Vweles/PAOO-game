@@ -1,6 +1,7 @@
 package PaooGame.Characters;
 
 import PaooGame.Physics.CollisionChecker;
+import PaooGame.Graphics.Assets; // Import necesar pentru desenare
 import java.awt.*;
 
 public class Inamic extends Npc {
@@ -24,6 +25,20 @@ public class Inamic extends Npc {
 
     @Override
     public void update(CollisionChecker checker) {
-
+        // Logica de AI va veni aici
     }
+
+    // ##########################################
+    // SEMN: IMPLEMENTARE FINALA DESENARE INAMIC
+    @Override
+    public void draw(Graphics g, int cameraX, int cameraY) {
+        // Folosim artificiul tau: inamicii arata ca Player-ul pe harta
+        if (Assets.walkDown != null && Assets.walkDown[0] != null) {
+            g.drawImage(Assets.walkDown[0],
+                    (int)x - cameraX,
+                    (int)y - cameraY,
+                    48, 48, null);
+        }
+    }
+    // ##########################################
 }

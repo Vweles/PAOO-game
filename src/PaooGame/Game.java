@@ -15,11 +15,11 @@ public class Game implements Runnable {
     private BufferStrategy bs;
     private Graphics g;
 
-    // Input
+    // Input-uri
     private InputTaste keyInput = new InputTaste();
     private MouseManager mouseManager = new MouseManager();
 
-    // Stari
+    // Obiectele pentru Stări
     private State introState;
     private State menuState;
     private State cutsceneState;
@@ -30,29 +30,39 @@ public class Game implements Runnable {
     }
 
     private void InitGame() {
+        // 1. Construim fereastra
         wnd.BuildGameWindow();
+
+        // 2. Setăm Input-urile pe Canvas și pe Frame
         wnd.GetCanvas().addKeyListener(keyInput);
         wnd.GetCanvas().addMouseListener(mouseManager);
         wnd.GetCanvas().addMouseMotionListener(mouseManager);
+        wnd.GetFrame().addMouseListener(mouseManager);
 
+        // 3. Încărcăm resursele (Aici se încarcă și PNG-urile cu inamici)
         Assets.Init();
 
-        // 1. Initializam PlayState (destinatia finala)
-        playState = new PlayState(keyInput, wnd.GetWndWidth(), wnd.GetWndHeight());
+        // --- LANȚUL DE STĂRI (Configurare de la coadă la cap) ---
 
-        // 2. Initializam CutsceneState (care stie sa treaca la playState)
+        // 4. Inițializăm PlayState (Destinația finală)
+        playState = new PlayState(keyInput, mouseManager, wnd.GetWndWidth(), wnd.GetWndHeight());
+
+        // 5. Inițializăm CutsceneState (Primește playState pentru a ști unde să treacă după dialog)
+        // Verifică dacă constructorul tău din CutsceneState acceptă aceste argumente
         cutsceneState = new CutsceneState(keyInput, (PlayState)playState);
 
-        // 3. Initializam MenuState (care stie sa treaca la cutsceneState)
+        // 6. Inițializăm MenuState (Primește mouseManager pentru butoane și cutsceneState ca următoarea destinație)
         menuState = new MenuState(keyInput, mouseManager, cutsceneState);
 
-        // 4. Initializam IntroState (care stie sa treaca la menuState)
+        // 7. Inițializăm IntroState (Prima stare care apare)
+        // Îi dăm menuState pentru ca după Intro (sau apăsare Enter) să treacă la Meniu
         introState = new IntroState(keyInput, wnd.GetWndWidth(), wnd.GetWndHeight(), menuState);
 
-        // Start joc!
+        // 8. Pornim jocul cu INTRO
         State.SetState(introState);
     }
 
+    @Override
     public void run() {
         InitGame();
         long oldTime = System.nanoTime();
@@ -69,23 +79,11 @@ public class Game implements Runnable {
         }
     }
 
-    public synchronized void StartGame() {
-        if (!runState) {
-            runState = true;
-            gameThread = new Thread(this);
-            gameThread.start();
-        }
-    }
-
-    public synchronized void StopGame() {
-        if (runState) {
-            runState = false;
-            try { gameThread.join(); } catch (InterruptedException e) { e.printStackTrace(); }
-        }
-    }
-
     private void Update() {
-        if (State.GetState() != null) State.GetState().Update();
+        // Actualizează starea curentă (oricare ar fi ea: Intro, Meniu, etc.)
+        if (State.GetState() != null) {
+            State.GetState().Update();
+        }
     }
 
     private void Draw() {
@@ -97,9 +95,31 @@ public class Game implements Runnable {
         g = bs.getDrawGraphics();
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
 
-        if (State.GetState() != null) State.GetState().Draw(g);
+        // Desenează starea curentă
+        if (State.GetState() != null) {
+            State.GetState().Draw(g);
+        }
 
         bs.show();
         g.dispose();
+    }
+
+    public synchronized void StartGame() {
+        if (!runState) {
+            runState = true;
+            gameThread = new Thread(this);
+            gameThread.start();
+        }
+    }
+
+    public synchronized void StopGame() {
+        if (runState) {
+            runState = false;
+            try {
+                gameThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

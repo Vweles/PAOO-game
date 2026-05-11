@@ -6,6 +6,19 @@ public class Assets {
     public static final int FRAME_SIZE = 32;
 
     public static BufferedImage soil, grass, mountain, water, tree, Abis, Tile1, Wall, tent, endDf, endAf;
+
+    // ##########################################
+    // ADaugat: INAMICI SI BUTOANE
+    public static BufferedImage minion_full;
+    public static BufferedImage minion_no_arm;
+    public static BufferedImage boss;
+
+    public static BufferedImage[] btn_attack = new BufferedImage[2];
+    public static BufferedImage[] btn_items = new BufferedImage[2];
+    public static BufferedImage[] btn_identify = new BufferedImage[2];
+    public static BufferedImage[] btn_heal_hp = new BufferedImage[2];
+    // ##########################################
+
     public static BufferedImage[] walkDown = new BufferedImage[3];
     public static BufferedImage[] walkLeft = new BufferedImage[3];
     public static BufferedImage[] walkRight = new BufferedImage[3];
@@ -18,13 +31,13 @@ public class Assets {
     public static BufferedImage[] eldritchDormant = new BufferedImage[18];
 
     public static void Init() {
-        // 1. Dale de baza (32x32) - Aici metoda crop(x, y) inca inmulteste cu 32, e corect
+        // 1. Dale de baza
         Abis = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/abyss_tile.png")).crop(0, 0);
         Tile1 = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Tiles.png")).crop(0, 0);
         Wall = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Cracks.png")).crop(0, 0);
         tent = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Tentacle 1 Sheet.png")).crop(0, 0);
 
-        // 2. Eldritch Entity - Folosim dimensiuni sigure (96x192 conform grilei de 3x6 dale)
+        // 2. Eldritch Entity
         SpriteSheet eldritchDSheet = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Eldritch Entity Dormant.png"));
         endDf = eldritchDSheet.crop(0, 0, 96, 192);
 
@@ -35,12 +48,11 @@ public class Assets {
         for (int i = 0; i < 18; i++) {
             int row = i / 3;
             int col = i % 3;
-            // Trimitem pixelii calculati: (0, 32, 64...)
             eldritchAwaken[i] = tentacleASheet.crop(col * 32, row * 32, 32, 32);
             eldritchDormant[i] = eldritchDSheet.crop(col * 32, row * 32, 32, 32);
         }
 
-        // 4. SpriteSheet joc (iarba, munte etc.)
+        // 4. SpriteSheet joc
         SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/textures/PaooGameSpriteSheet.png"));
         grass = sheet.crop(0, 0);
         soil = sheet.crop(1, 0);
@@ -48,28 +60,35 @@ public class Assets {
         mountain = sheet.crop(3, 0);
         tree = sheet.crop(3, 1);
 
-        // 5. Personaj (2.png) - REPARAT COMPLET
+        // 5. Personaj (2.png)
         SpriteSheet charSheet = new SpriteSheet(ImageLoader.LoadImage("/MC/2.png"));
-
-        // Walk (Randurile 0-3)
         for (int i = 0; i < 3; i++) {
             walkDown[i]  = cropChar(charSheet, i, 0);
             walkRight[i] = cropChar(charSheet, i, 1);
             walkLeft[i]  = cropChar(charSheet, i, 2);
             walkUp[i]    = cropChar(charSheet, i, 3);
         }
-
-        // Crawl (Randurile 4-7) - Folosim doar 2 cadre pentru ca spritesheet-ul e limitat
         for (int i = 0; i < 2; i++) {
             crawlDown[i]  = cropChar(charSheet, i, 4);
             crawlRight[i] = cropChar(charSheet, i, 5);
             crawlLeft[i]  = cropChar(charSheet, i, 6);
             crawlUp[i]    = cropChar(charSheet, i, 7);
         }
+
+        // ##########################################
+        // 6. INCARCARE INAMICI (PNG-urile tale)
+        // Folosim ImageLoader direct pentru ca sunt imagini individuale, nu sheet-uri
+        minion_full = ImageLoader.LoadImage("/LVL1/Characaters/silva_fiull.png");
+        minion_no_arm = ImageLoader.LoadImage("/LVL1/Characaters/silva_faramana_dreapta.png");
+        boss = ImageLoader.LoadImage("/LVL1/Characaters/Bosslvl1.png");
+
+        // 7. PLACEHOLDER BUTOANE (Evitam erorile pana ai pozele)
+        // Daca ai un sheet pentru butoane, foloseste crop aici.
+        // Daca nu, butoanele vor fi invizibile dar codul nu va crapa.
+        // ##########################################
     }
 
     private static BufferedImage cropChar(SpriteSheet sheet, int col, int row) {
-        // Trimitem pixelii exacti: coloana * 48 si randul * 48
         return sheet.crop(col * 48, row * 48, 48, 48);
     }
 }
