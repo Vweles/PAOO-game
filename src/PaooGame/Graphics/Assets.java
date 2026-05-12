@@ -12,6 +12,7 @@ public class Assets {
     public static BufferedImage minion_full;
     public static BufferedImage minion_no_arm;
     public static BufferedImage boss;
+    public static BufferedImage lvl2Sheet;
 
     public static BufferedImage[] btn_attack = new BufferedImage[2];
     public static BufferedImage[] btn_items = new BufferedImage[2];
@@ -90,5 +91,13 @@ public class Assets {
 
     private static BufferedImage cropChar(SpriteSheet sheet, int col, int row) {
         return sheet.crop(col * 48, row * 48, 48, 48);
+    }
+    public static void InitLevel2() {
+        // Încarcă imaginea mare pentru nivelul 2
+        lvl2Sheet = ImageLoader.LoadImage("/LVL2/tileset_lvl2.png");
+    }
+    public static BufferedImage getLvl2Crop(int x, int y, int width, int height) {
+        SpriteSheet ss = new SpriteSheet(lvl2Sheet);
+        return ss.crop(x, y, width, height);
     }
 }

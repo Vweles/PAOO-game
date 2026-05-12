@@ -115,4 +115,13 @@ public class Map {
             }
         }
     }
+
+    public void loadMap(String... paths) {
+        enemies.clear(); // Ștergem inamicii vechi
+        layers = new int[paths.length][height][width]; // Reinițializăm straturile
+
+        for(int i = 0; i < paths.length; i++) {
+            loadLayer(paths[i], i);
+        }
+    }
 }

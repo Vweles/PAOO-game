@@ -51,4 +51,14 @@ public class Tile {
 
     public boolean IsSolid() { return isSolid; }
     public int GetId() { return id; }
+    public static void InitLevel2Tiles() {
+        // ID 1: (0,0) - 32x32, fără coliziune
+        tiles[3] = new Tile(Assets.getLvl2Crop(0, 0, 32, 32), 1,false);
+
+        // ID 257: (0,256) - 32x32, CU coliziune (trebuie să avem o metodă de setat coliziunea)
+        tiles[257] = new Tile(Assets.getLvl2Crop(0, 256, 32, 32), 257, true);
+
+        // ID 13: (384,0) - 32x32, probabil tot cu coliziune (fiind în afara mapei)
+        tiles[13] = new Tile(Assets.getLvl2Crop(384, 0, 32, 32), 13, true);
+    }
 }

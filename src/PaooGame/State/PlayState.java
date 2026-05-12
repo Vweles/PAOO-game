@@ -74,4 +74,20 @@ public class PlayState extends State {
             e.draw(g, (int)camera.getxOffset(), (int)camera.getyOffset());
         }
     }
+    public void goToLevel2() {
+        System.out.println("Incepem tranzitia la Level 2...");
+
+        // Incarcam fisierele noi
+        currentMap.loadMap(
+                "/LVL2/layer1_formatat.txt",
+                "/LVL2/layer2_formatat.txt",
+                "/LVL2/layer3_formatat.txt"
+        );
+
+        // Resetam pozitia jucatorului
+        player.setX(100);
+        player.setY(100);
+
+        System.out.println("Teleportare reusita!");
+    }
 }
