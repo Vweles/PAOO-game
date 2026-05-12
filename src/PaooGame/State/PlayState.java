@@ -7,6 +7,8 @@ import PaooGame.KeyImput.MouseManager; // ################# SEMN: IMPORT NOU
 import PaooGame.Physics.CollisionChecker;
 import PaooGame.Graphics.GameCamera;
 import PaooGame.Map.Map;
+import PaooGame.Tiles.Tile;
+
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
@@ -38,6 +40,8 @@ public class PlayState extends State {
         player.update(checker);
         camera.centerOnEntity(player);
 
+        camera.checkBlankSpace(75 * Tile.TILE_WIDTH, 50 * Tile.TILE_HEIGHT);
+
         // ##########################################
         // SEMN: LOGICA DE DETECTIE LUPTA SI CURATARE INAMICI
         for (int i = 0; i < currentMap.getEnemies().size(); i++) {
@@ -56,8 +60,8 @@ public class PlayState extends State {
             Rectangle eRect = new Rectangle((int)e.x + e.solidArea.x, (int)e.y + e.solidArea.y, e.solidArea.width, e.solidArea.height);
 
             if (pRect.intersects(eRect)) {
-                // IMPORTANT: Trimitem mouseManager catre BattleState
-                State.SetState(new BattleState(keyInput, mouseManager, player, e));
+                // Trimitem "this" la final (reprezintă PlayState-ul actual)
+                State.SetState(new BattleState(keyInput, mouseManager, player, e, this));
             }
         }
     }

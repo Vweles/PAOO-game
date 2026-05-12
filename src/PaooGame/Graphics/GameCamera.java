@@ -19,10 +19,25 @@ public class GameCamera {
     }
 
     public void checkBlankSpace(int worldWidth, int worldHeight) {
+        // Calculăm limitele luând în calcul zoom-ul
+        float viewWidth = wndWidth / zoom;
+        float viewHeight = wndHeight / zoom;
+
+        // Constrângere la stânga și sus
         if (xOffset < 0) xOffset = 0;
         if (yOffset < 0) yOffset = 0;
-        if (xOffset > worldWidth - (wndWidth / zoom)) xOffset = worldWidth - (wndWidth / zoom);
-        if (yOffset > worldHeight - (wndHeight / zoom)) yOffset = worldHeight - (wndHeight / zoom);
+
+        // Constrângere la dreapta și jos (nu lăsa camera să vadă peste marginea hărții)
+        if (xOffset > worldWidth - viewWidth) {
+            xOffset = worldWidth - viewWidth;
+        }
+        if (yOffset > worldHeight - viewHeight) {
+            yOffset = worldHeight - viewHeight;
+        }
+
+        // Safety check: dacă harta e mai mică decât fereastra, centreaz-o pe 0
+        if(worldWidth < viewWidth) xOffset = 0;
+        if(worldHeight < viewHeight) yOffset = 0;
     }
 
     public void setZoom(float zoom) { this.zoom = zoom; }

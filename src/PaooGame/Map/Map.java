@@ -94,19 +94,21 @@ public class Map {
     }
 
     public void Draw(Graphics g, GameCamera camera) {
+        // Calculăm limitele de randare în funcție de poziția camerei și dimensiunea ferestrei
+        // Folosim zoom-ul pentru a determina exact câte tile-uri vedem
         int xStart = (int) Math.max(0, camera.getxOffset() / Tile.TILE_WIDTH);
-        int xEnd = (int) Math.min(width, (camera.getxOffset() + 800) / Tile.TILE_WIDTH + 1);
-        int yStart = (int) Math.max(0, camera.getyOffset() / Tile.TILE_HEIGHT);
-        int yEnd = (int) Math.min(height, (camera.getyOffset() + 600) / Tile.TILE_HEIGHT + 1);
+        int xEnd = (int) Math.min(width, (camera.getxOffset() + (800 / camera.getZoom())) / Tile.TILE_WIDTH + 1);
 
-        // Desenam doar straturile 0 si 1 (Sol si Obiecte statice)
-        // Stratul 2 (inamicii) se deseneaza separat prin lista de entitati
-        for (int l = 0; l < Math.min(layers.length, 2); l++) {
+        int yStart = (int) Math.max(0, camera.getyOffset() / Tile.TILE_HEIGHT);
+        int yEnd = (int) Math.min(height, (camera.getyOffset() + (600 / camera.getZoom())) / Tile.TILE_HEIGHT + 1);
+
+        for (int l = 0; l < 2; l++) { // Randăm straturile 0 și 1
             for (int y = yStart; y < yEnd; y++) {
                 for (int x = xStart; x < xEnd; x++) {
                     int id = layers[l][y][x];
                     if (id > 0 && Tile.tiles[id] != null) {
-                        Tile.tiles[id].Draw(g, (int)(x * Tile.TILE_WIDTH - camera.getxOffset()),
+                        Tile.tiles[id].Draw(g,
+                                (int)(x * Tile.TILE_WIDTH - camera.getxOffset()),
                                 (int)(y * Tile.TILE_HEIGHT - camera.getyOffset()));
                     }
                 }

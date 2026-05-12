@@ -15,50 +15,73 @@ public class BattleState extends State {
     private InputTaste keyInput;
     private MouseManager mouseManager;
 
-    private enum BattleMenu { MAIN, ATTACK, ITEMS }
+    // REPARATIE: Referinta catre starea de explorare pentru a nu reseta jocul
+    private State backState;
+
+    private enum BattlePhase { PLAYER_TURN, ENEMY_TURN, WIN, LOSE }
+    private enum BattleMenu { MAIN, ATTACK, ITEMS, SKILLS }
+
+    private BattlePhase currentPhase = BattlePhase.PLAYER_TURN;
     private BattleMenu currentMenu = BattleMenu.MAIN;
 
     private ArrayList<UIImageButton> mainButtons;
-    private ArrayList<UIImageButton> itemButtons;
+    private String battleLog = "Incepe lupta...";
+    private int enemyAttackTimer = 0;
 
-    private boolean identifyActive = false;
-    private boolean armSevered = false; // LOGICĂ PENTRU PNG-UL TĂU
-
-    private Rectangle[] limbHitboxes;
-    private String[] limbNames = {"CAP", "CORP", "MANA STÂNGA", "MANA DREAPTĂ"};
-
-    public BattleState(InputTaste keyInput, MouseManager mouseManager, MC player, Entity enemy) {
+    // REPARATIE: Constructorul primeste acum si 'backState'
+    public BattleState(InputTaste keyInput, MouseManager mouseManager, MC player, Entity enemy, State backState) {
         this.keyInput = keyInput;
         this.mouseManager = mouseManager;
         this.player = player;
         this.enemy = enemy;
-
-        // Hitbox-uri ajustate aproximativ pentru un PNG inamic central
-        limbHitboxes = new Rectangle[4];
-        limbHitboxes[0] = new Rectangle(370, 150, 60, 60);  // Cap
-        limbHitboxes[1] = new Rectangle(360, 220, 80, 120); // Corp
-        limbHitboxes[2] = new Rectangle(310, 220, 40, 100); // Mana Stanga
-        limbHitboxes[3] = new Rectangle(450, 220, 40, 100); // Mana Dreapta
-
+        this.backState = backState;
         InitButtons();
     }
 
     private void InitButtons() {
         mainButtons = new ArrayList<>();
-        itemButtons = new ArrayList<>();
-
-        mainButtons.add(new UIImageButton(50, 420, 150, 40, Assets.btn_attack, () -> { currentMenu = BattleMenu.ATTACK; }));
-        mainButtons.add(new UIImageButton(50, 470, 150, 40, Assets.btn_items, () -> { currentMenu = BattleMenu.ITEMS; }));
-        mainButtons.add(new UIImageButton(50, 520, 150, 40, Assets.btn_identify, () -> { identifyActive = true; }));
-
-        itemButtons.add(new UIImageButton(250, 450, 150, 50, Assets.btn_heal_hp, () -> {
-            player.hp += 50;
-            currentMenu = BattleMenu.MAIN;
-        }));
+        // Butoanele pentru meniul principal de lupta
+        mainButtons.add(new UIImageButton(30, 420, 140, 35, null, () -> { currentMenu = BattleMenu.ATTACK; }));
+        mainButtons.add(new UIImageButton(30, 460, 140, 35, null, () -> { currentMenu = BattleMenu.SKILLS; }));
+        mainButtons.add(new UIImageButton(30, 500, 140, 35, null, () -> { battleLog = "Te pregatesti de aparare..."; }));
+        mainButtons.add(new UIImageButton(30, 540, 140, 35, null, () -> { currentMenu = BattleMenu.ITEMS; }));
     }
 
     @Override
     public void Update() {
+        // --- 1. VERIFICARE CONDITII DE FINAL ---
+        // Verificam daca inamicul a murit
+        if (enemy.hp <= 0 && currentPhase != BattlePhase.WIN) {
+            enemy.hp = 0; // Siguranta pentru afisaj
+            currentPhase = BattlePhase.WIN;
+            battleLog = "Inamicul a fost rapus! Click pentru a continua.";
+        }
+        // Verificam daca jucatorul a murit
+        if (player.hp <= 0 && currentPhase != BattlePhase.LOSE) {
+            player.hp = 0;
+            currentPhase = BattlePhase.LOSE;
+            battleLog = "Ti-ai pierdut viata in intuneric. Click pentru a iesi.";
+        }
+
+        // --- 2. LOGICA DE IESIRE DIN LUPTA ---
+        if (currentPhase == BattlePhase.WIN || currentPhase == BattlePhase.LOSE) {
+            if (mouseManager.leftPressed) {
+                // REPARATIE: Ne intoarcem la PlayState-ul existent, nu cream unul nou!
+                State.SetState(backState);
+                mouseManager.leftPressed = false;
+            }
+            return;
+        }
+
+        // --- 3. LOGICA TURELOR ---
+        if (currentPhase == BattlePhase.PLAYER_TURN) {
+            handlePlayerInput();
+        } else if (currentPhase == BattlePhase.ENEMY_TURN) {
+            handleEnemyAI();
+        }
+    }
+
+    private void handlePlayerInput() {
         int mX = mouseManager.mouseX;
         int mY = mouseManager.mouseY;
         boolean click = mouseManager.leftPressed;
@@ -66,67 +89,71 @@ public class BattleState extends State {
         if (currentMenu == BattleMenu.MAIN) {
             for (UIImageButton b : mainButtons) b.Update(mX, mY, click);
         } else if (currentMenu == BattleMenu.ATTACK) {
+            // Placeholder: Click oriunde pe ecran in meniul de atac pentru a lovi
             if (click) {
-                for (int i = 0; i < limbHitboxes.length; i++) {
-                    if (limbHitboxes[i].contains(mX, mY)) {
-                        attackLimb(i);
-                        currentMenu = BattleMenu.MAIN;
-                        mouseManager.leftPressed = false;
-                        break;
-                    }
-                }
-            }
-        }
+                enemy.hp -= 25;
+                battleLog = "Ai lovit cu disperare! (-25 HP)";
 
-        if (enemy.hp <= 0) {
-            // REPARAT: Trimitem 4 argumente către PlayState
-            State.SetState(new PlayState(keyInput, mouseManager, 800, 600));
+                mouseManager.leftPressed = false; // Reset click obligatoriu
+                currentPhase = BattlePhase.ENEMY_TURN;
+                currentMenu = BattleMenu.MAIN;
+            }
         }
     }
 
-    private void attackLimb(int limbIndex) {
-        int damage = 25;
-        // Dacă atacăm mâna stângă (index 2), o "tăiem"
-        if (limbIndex == 2) {
-            armSevered = true;
-            damage += 40;
-            System.out.println("I-ai taiat mana stanga!");
+    private void handleEnemyAI() {
+        enemyAttackTimer++;
+        if (enemyAttackTimer > 90) { // Pauza de 1.5 secunde
+            player.hp -= 20;
+            battleLog = "Inamicul te-a sfartecat! (-20 HP)";
+
+            enemyAttackTimer = 0;
+            currentPhase = BattlePhase.PLAYER_TURN;
         }
-        enemy.hp -= damage;
     }
 
     @Override
     public void Draw(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, 800, 600);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, 800, 600);
 
-        // --- SCHIMBARE PNG ÎN FUNCȚIE DE STARE ---
-        if (armSevered) {
-            g.drawImage(Assets.minion_no_arm, 300, 150, 200, 250, null);
-        } else {
-            g.drawImage(Assets.minion_full, 300, 150, 200, 250, null);
+        // 1. Inamic
+        if(Assets.minion_full != null) {
+            g2d.drawImage(Assets.minion_full, 280, 50, 240, 320, null);
         }
 
-        // Vizualizare Identify
-        if (identifyActive && currentMenu == BattleMenu.ATTACK) {
-            for (int i = 0; i < limbHitboxes.length; i++) {
-                g.setColor(new Color(255, 0, 0, 100));
-                g.fillRect(limbHitboxes[i].x, limbHitboxes[i].y, limbHitboxes[i].width, limbHitboxes[i].height);
-                g.setColor(Color.WHITE);
-                g.drawRect(limbHitboxes[i].x, limbHitboxes[i].y, limbHitboxes[i].width, limbHitboxes[i].height);
-                g.drawString(limbNames[i], limbHitboxes[i].x, limbHitboxes[i].y - 5);
+        // 2. Placeholder MC (Patrat alb)
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(100, 250, 80, 150);
+
+        // 3. Caseta UI de jos
+        g2d.setColor(new Color(20, 20, 20));
+        g2d.fillRect(10, 400, 780, 190);
+        g2d.setColor(Color.WHITE);
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawRect(10, 400, 780, 190);
+
+        // 4. Meniu Text
+        if (currentMenu == BattleMenu.MAIN) {
+            String[] labels = {"Attack", "Skills", "Guard", "Items"};
+            for (int i = 0; i < mainButtons.size(); i++) {
+                boolean isHover = mainButtons.get(i).isHovering();
+                g2d.setColor(isHover ? Color.RED : Color.WHITE);
+                g2d.setFont(new Font("Arial", Font.BOLD, 20));
+                g2d.drawString(labels[i], 50, 445 + (i * 40));
             }
         }
 
-        // UI
-        g.setColor(Color.WHITE);
-        g.drawRect(20, 400, 760, 180);
-        if (currentMenu == BattleMenu.MAIN) {
-            for (UIImageButton b : mainButtons) b.Draw(g);
-        } else {
-            g.drawString("CLICK PE CORP PENTRU ATAC", 300, 450);
-        }
+        // 5. Battle Log (Mesaje despre ce se intampla)
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        g2d.drawString(battleLog, 220, 430);
 
-        g.drawString("ENEMY HP: " + enemy.hp, 500, 50);
+        // 6. Stats MC (HP-ul tau)
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Arial", Font.BOLD, 16));
+        g2d.drawString("MC HP: " + player.hp, 550, 445);
+        g2d.drawString("MC Mind: 100", 550, 475);
     }
 }
