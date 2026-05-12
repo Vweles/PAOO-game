@@ -77,17 +77,19 @@ public class PlayState extends State {
     public void goToLevel2() {
         System.out.println("Incepem tranzitia la Level 2...");
 
-        // Incarcam fisierele noi
+        // 1. Mai intai initializam imaginile si Tile-urile pentru Lvl 2
+        // Presupun ca ai Assets.InitLevel2() care incarca foaia de tile-uri
+        PaooGame.Graphics.Assets.InitLevel2();
+        Tile.InitLevel2Tiles();
+
+        // 2. Abia apoi incarcam harta
         currentMap.loadMap(
                 "/LVL2/layer1_formatat.txt",
                 "/LVL2/layer2_formatat.txt",
                 "/LVL2/layer3_formatat.txt"
         );
 
-        // Resetam pozitia jucatorului
         player.setX(100);
         player.setY(100);
-
-        System.out.println("Teleportare reusita!");
     }
 }

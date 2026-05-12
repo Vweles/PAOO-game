@@ -67,6 +67,6 @@ public class CollisionChecker {
 
     private boolean isTileSolid(int id) {
         // ID-uri solide: 1 (Abis), 6 (Wall/Cracks), 144-173 (Eldritch Corp)
-        return (id == 1 || id == 6 || (id >= 144 && id <= 197));
+        return (id == 1 || id == 6 || (id >= 144 && id <= 197 || id ==13 || id ==257));
     }
 }

@@ -13,7 +13,7 @@ public class Tile {
     public static Tile wallTile = new Tile(Assets.Wall, 6, true);
 
     // Adaugam si tile-urile de la profesor in array pentru a fi recunoscute de Map
-    public static Tile grassTile = new GrassTile(3);
+    public static Tile grassTile = new GrassTile(9);
     public static Tile soilTile = new SoilTile(4);
     public static Tile waterTile = new WaterTile(5);
     public static Tile treeTile = new TreeTile(7);
@@ -53,7 +53,7 @@ public class Tile {
     public int GetId() { return id; }
     public static void InitLevel2Tiles() {
         // ID 1: (0,0) - 32x32, fără coliziune
-        tiles[3] = new Tile(Assets.getLvl2Crop(0, 0, 32, 32), 1,false);
+        tiles[3] = new Tile(Assets.getLvl2Crop(0, 0, 32, 32), 3,false);
 
         // ID 257: (0,256) - 32x32, CU coliziune (trebuie să avem o metodă de setat coliziunea)
         tiles[257] = new Tile(Assets.getLvl2Crop(0, 256, 32, 32), 257, true);
