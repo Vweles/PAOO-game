@@ -6,19 +6,12 @@ public class Assets {
     public static final int FRAME_SIZE = 32;
 
     public static BufferedImage soil, grass, mountain, water, tree, Abis, Tile1, Wall, tent, endDf, endAf;
-
-    // ##########################################
-    // ADaugat: INAMICI SI BUTOANE
-    public static BufferedImage minion_full;
-    public static BufferedImage minion_no_arm;
-    public static BufferedImage boss;
-    public static BufferedImage lvl2Sheet;
+    public static BufferedImage minion_full, minion_no_arm, boss, lvl2Sheet;
 
     public static BufferedImage[] btn_attack = new BufferedImage[2];
     public static BufferedImage[] btn_items = new BufferedImage[2];
     public static BufferedImage[] btn_identify = new BufferedImage[2];
     public static BufferedImage[] btn_heal_hp = new BufferedImage[2];
-    // ##########################################
 
     public static BufferedImage[] walkDown = new BufferedImage[3];
     public static BufferedImage[] walkLeft = new BufferedImage[3];
@@ -53,7 +46,7 @@ public class Assets {
             eldritchDormant[i] = eldritchDSheet.crop(col * 32, row * 32, 32, 32);
         }
 
-        // 4. SpriteSheet joc
+        // 4. SpriteSheet joc (profesor)
         SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/textures/PaooGameSpriteSheet.png"));
         grass = sheet.crop(0, 0);
         soil = sheet.crop(1, 0);
@@ -61,7 +54,7 @@ public class Assets {
         mountain = sheet.crop(3, 0);
         tree = sheet.crop(3, 1);
 
-        // 5. Personaj (2.png)
+        // 5. Personaj (Animații 48x48)
         SpriteSheet charSheet = new SpriteSheet(ImageLoader.LoadImage("/MC/2.png"));
         for (int i = 0; i < 3; i++) {
             walkDown[i]  = cropChar(charSheet, i, 0);
@@ -76,28 +69,28 @@ public class Assets {
             crawlUp[i]    = cropChar(charSheet, i, 7);
         }
 
-        // ##########################################
-        // 6. INCARCARE INAMICI (PNG-urile tale)
-        // Folosim ImageLoader direct pentru ca sunt imagini individuale, nu sheet-uri
+        // 6. Inamici
         minion_full = ImageLoader.LoadImage("/LVL1/Characaters/silva_fiull.png");
         minion_no_arm = ImageLoader.LoadImage("/LVL1/Characaters/silva_faramana_dreapta.png");
         boss = ImageLoader.LoadImage("/LVL1/Characaters/Bosslvl1.png");
-
-        // 7. PLACEHOLDER BUTOANE (Evitam erorile pana ai pozele)
-        // Daca ai un sheet pentru butoane, foloseste crop aici.
-        // Daca nu, butoanele vor fi invizibile dar codul nu va crapa.
-        // ##########################################
     }
 
     private static BufferedImage cropChar(SpriteSheet sheet, int col, int row) {
         return sheet.crop(col * 48, row * 48, 48, 48);
     }
+
     public static void InitLevel2() {
-        // Încarcă imaginea mare pentru nivelul 2
         lvl2Sheet = ImageLoader.LoadImage("/LVL2/tileset_lvl2.png");
     }
+
     public static BufferedImage getLvl2Crop(int x, int y, int width, int height) {
-        SpriteSheet ss = new SpriteSheet(lvl2Sheet);
-        return ss.crop(x, y, width, height);
+        if (lvl2Sheet == null) return null;
+        try {
+            // Folosim direct getSubimage pentru precizie pe pixeli
+            return lvl2Sheet.getSubimage(x, y, width, height);
+        } catch (Exception e) {
+            System.err.println("Eroare crop Lvl2 la: " + x + "," + y);
+            return null;
+        }
     }
 }
