@@ -4,9 +4,10 @@ import PaooGame.Characters.Entity;
 import PaooGame.Characters.Gru;
 import PaooGame.Graphics.Assets;
 import java.awt.Graphics;
+import java.awt.Color;            // IMPORT ADAUGAT
+import java.awt.image.BufferedImage; // IMPORT ADAUGAT
 
 public class Bossss extends Gru {
-
     private int soulEnergy = 100;
     private boolean isAuraActive = false;
     private int myMaxHp = 5000;
@@ -18,10 +19,8 @@ public class Bossss extends Gru {
 
     public void infernoBlast(Entity target) {
         if (this.rage >= 20) {
-            int fireDamage = (this.str + this.rage) * 3; // str cu minuscule
-            target.hp -= fireDamage;
+            target.hp -= (this.str + this.rage) * 3;
             this.rage -= 10;
-            System.out.println("INFERNO BLAST!");
         } else {
             this.enrage();
         }
@@ -34,8 +33,7 @@ public class Bossss extends Gru {
 
     @Override
     public void specialAttack(Entity target) {
-        int damage = (int)(this.att_dmg_hit * 2.5 + (this.rage * 1.5));
-        target.hp -= damage;
+        target.hp -= (int)(this.att_dmg_hit * 2.5 + (this.rage * 1.5));
     }
 
     public void soulSacrifice() {
@@ -46,31 +44,13 @@ public class Bossss extends Gru {
         }
     }
 
-    public void bossLogic(Entity player) {
-        if (this.hp < this.myMaxHp * 0.3) {
-            soulSacrifice();
-        }
-
-        if (this.rage > 40) {
-            infernoBlast(player);
-        } else {
-            specialAttack(player);
-        }
-
-        if (this.hp < this.myMaxHp / 2 && !isAuraActive) {
-            activateMagmaAura();
-        }
-    }
-
     @Override
     public void draw(Graphics g, int xOffset, int yOffset) {
         if (isAuraActive) {
-            g.setColor(new java.awt.Color(255, 69, 0, 100));
-            g.fillOval(x - xOffset - 20, y - yOffset - 20, 80, 80);
+            g.setColor(new Color(255, 69, 0, 100));
+            g.fillOval(x - xOffset - 20, y - yOffset - 20, 100, 100);
         }
-
-        if (Assets.boss != null) {
-            g.drawImage(Assets.boss, x - xOffset, y - yOffset, 64, 64, null);
-        }
+        BufferedImage img = (Assets.boss_lvl2 != null) ? Assets.boss_lvl2 : Assets.boss;
+        g.drawImage(img, x - xOffset, y - yOffset, 64, 64, null);
     }
 }

@@ -7,6 +7,9 @@ public class Assets {
 
     public static BufferedImage soil, grass, mountain, water, tree, Abis, Tile1, Wall, tent, endDf, endAf;
     public static BufferedImage minion_full, minion_no_arm, boss, lvl2Sheet;
+    public static BufferedImage minion_lvl2, boss_lvl2;
+    public static BufferedImage lvl3Sheet;
+    public static BufferedImage lvl3minion,lvl3bosss;
 
     public static BufferedImage[] btn_attack = new BufferedImage[2];
     public static BufferedImage[] btn_items = new BufferedImage[2];
@@ -79,9 +82,7 @@ public class Assets {
         return sheet.crop(col * 48, row * 48, 48, 48);
     }
 
-    public static void InitLevel2() {
-        lvl2Sheet = ImageLoader.LoadImage("/LVL2/tileset_lvl2.png");
-    }
+
 
     public static BufferedImage getLvl2Crop(int x, int y, int width, int height) {
         if (lvl2Sheet == null) return null;
@@ -92,5 +93,28 @@ public class Assets {
             System.err.println("Eroare crop Lvl2 la: " + x + "," + y);
             return null;
         }
+    }
+    public static BufferedImage getLvl3Crop(int x, int y, int width, int height) {
+        if (lvl3Sheet == null) return null;
+        try {
+            return lvl3Sheet.getSubimage(x, y, width, height);
+        } catch (Exception e) {
+            System.err.println("Eroare crop Lvl3 la: " + x + "," + y);
+            return null;
+        }
+    }
+    public static void InitLevel2() {
+        lvl2Sheet = ImageLoader.LoadImage("/LVL2/tileset_lvl2.png");
+        // Placeholders sau imaginile reale pentru inamici Lvl 2
+        minion_lvl2 = ImageLoader.LoadImage("/LVL2/implvl2.png");
+        boss_lvl2 = ImageLoader.LoadImage("/LVL2/boslvl2.png");
+    }
+    public static void InitLevel3() {
+
+        lvl3Sheet = ImageLoader.LoadImage("/LVL3/tilelvl3.png");
+        lvl3minion = ImageLoader.LoadImage("/LVL3/minionlvl3.png");
+        lvl3bosss = ImageLoader.LoadImage("/LVL3/bossslvl3.png");
+
+
     }
 }

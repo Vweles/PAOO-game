@@ -4,6 +4,8 @@ import PaooGame.Characters.Entity;
 import PaooGame.Characters.MinionBANANA;
 import PaooGame.Graphics.Assets;
 import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 
 public class mn extends MinionBANANA {
 
@@ -19,8 +21,8 @@ public class mn extends MinionBANANA {
 
     public void stealGlory(Entity target) {
         if (!hasStolenGlory) {
-            this.temporarySteal = target.str / 4; // str cu minuscule
-            this.spell_dmg += temporarySteal; // spell_dmg exista in Entity
+            this.temporarySteal = target.str / 4;
+            this.spell_dmg += temporarySteal;
             this.hasStolenGlory = true;
             System.out.println(this.nume + " a furat gloria! Spell DMG crescut.");
         }
@@ -28,7 +30,7 @@ public class mn extends MinionBANANA {
 
     @Override
     public void castSpell(Entity target) {
-        // Calculam MaxHP al tintei folosind formula ta din Entity
+        // Calculam MaxHP al tintei
         int targetMaxHp = 100 + 10 * target.tho + 5 * target.str;
         int bonusDamage = (target.hp > targetMaxHp / 2) ? 20 : 0;
         int totalDamage = this.spell_dmg + bonusDamage;
@@ -51,12 +53,15 @@ public class mn extends MinionBANANA {
     @Override
     public void draw(Graphics g, int xOffset, int yOffset) {
         if (hasStolenGlory) {
-            g.setColor(new java.awt.Color(255, 215, 0, 150));
+            // Fix Color: am pus Color.GOLD sau varianta custom corecta
+            g.setColor(new Color(255, 215, 0, 150));
             g.drawArc(x - xOffset, y - yOffset - 10, 30, 10, 0, 180);
         }
 
-        if (Assets.minion_full != null) {
-            g.drawImage(Assets.minion_full, x - xOffset, y - yOffset, 32, 32, null);
+        // Fix BufferedImage
+        BufferedImage img = (Assets.minion_lvl2 != null) ? Assets.minion_lvl2 : Assets.minion_full;
+        if (img != null) {
+            g.drawImage(img, x - xOffset, y - yOffset, 32, 32, null);
         }
     }
-}
+} // <--- Verifica sa ai aceasta acolada de inchidere a clasei!

@@ -2,12 +2,17 @@ package PaooGame.State;
 
 import PaooGame.Characters.Entity;
 import PaooGame.Characters.MC;
+import PaooGame.Characters.LVL2.Bossss;
+import PaooGame.Characters.LVL2.mn;
 import PaooGame.KeyImput.InputTaste;
 import PaooGame.KeyImput.MouseManager;
 import PaooGame.KeyImput.UIImageButton;
 import PaooGame.Graphics.Assets;
 import java.awt.*;
+import java.awt.image.BufferedImage; // IMPORT ADAUGAT
 import java.util.ArrayList;
+
+
 
 public class BattleState extends State {
     private MC player;
@@ -15,16 +20,16 @@ public class BattleState extends State {
     private InputTaste keyInput;
     private MouseManager mouseManager;
     private State backState;
-    private boolean isBossBattle;
+    private boolean isBossLvl1, isBossLvl2;
 
-    private enum BattlePhase { PLAYER_TURN, ENEMY_TURN, WIN, LOSE }
-    private enum BattleMenu { MAIN, ATTACK, ITEMS, SKILLS }
+    private enum BattlePhase { PLAYER_TURN, COMPANION_TURN, ENEMY_TURN, WIN, LOSE }
+    private enum BattleMenu { MAIN, ATTACK, ITEMS }
 
     private BattlePhase currentPhase = BattlePhase.PLAYER_TURN;
     private BattleMenu currentMenu = BattleMenu.MAIN;
     private ArrayList<UIImageButton> mainButtons;
     private String battleLog = "Incepe lupta...";
-    private int enemyAttackTimer = 0;
+    private int turnTimer = 0;
 
     public BattleState(InputTaste keyInput, MouseManager mouseManager, MC player, Entity enemy, State backState) {
         this.keyInput = keyInput;
@@ -33,17 +38,16 @@ public class BattleState extends State {
         this.enemy = enemy;
         this.backState = backState;
 
-        // Verificam daca inamicul este instanta de Boss
-        this.isBossBattle = (enemy instanceof PaooGame.Characters.LVL1.Boss);
+        this.isBossLvl1 = (enemy instanceof PaooGame.Characters.LVL1.Boss);
+        this.isBossLvl2 = (enemy instanceof Bossss);
         InitButtons();
     }
 
     private void InitButtons() {
         mainButtons = new ArrayList<>();
         mainButtons.add(new UIImageButton(30, 420, 140, 35, null, () -> { currentMenu = BattleMenu.ATTACK; }));
-        mainButtons.add(new UIImageButton(30, 460, 140, 35, null, () -> { currentMenu = BattleMenu.SKILLS; }));
-        mainButtons.add(new UIImageButton(30, 500, 140, 35, null, () -> { battleLog = "Te pregatesti de aparare..."; }));
-        mainButtons.add(new UIImageButton(30, 540, 140, 35, null, () -> { currentMenu = BattleMenu.ITEMS; }));
+        mainButtons.add(new UIImageButton(30, 460, 140, 35, null, () -> { battleLog = "Te pregatesti..."; }));
+        mainButtons.add(new UIImageButton(30, 500, 140, 35, null, () -> { currentMenu = BattleMenu.ITEMS; }));
     }
 
     @Override
@@ -51,22 +55,14 @@ public class BattleState extends State {
         if (enemy.hp <= 0 && currentPhase != BattlePhase.WIN) {
             enemy.hp = 0;
             currentPhase = BattlePhase.WIN;
-            battleLog = isBossBattle ? "Morbryx a fost infrant! Portalul s-a deschis. Click!" : "Inamic invins! Click!";
-        }
-
-        if (player.hp <= 0 && currentPhase != BattlePhase.LOSE) {
-            player.hp = 0;
-            currentPhase = BattlePhase.LOSE;
-            battleLog = "Ai pierdut... Click pentru a iesi.";
+            battleLog = (isBossLvl1 || isBossLvl2) ? "Boss infrant! Portalul s-a deschis. Click!" : "Inamic invins! Click!";
         }
 
         if (currentPhase == BattlePhase.WIN || currentPhase == BattlePhase.LOSE) {
             if (mouseManager.leftPressed) {
-                // REPARATIE TELEPORTARE: Daca e boss, apelam functia din PlayState
-                if (currentPhase == BattlePhase.WIN && isBossBattle) {
-                    if (backState instanceof PlayState) {
-                        ((PlayState) backState).goToLevel2();
-                    }
+                if (currentPhase == BattlePhase.WIN) {
+                    if (isBossLvl1) ((PlayState) backState).goToLevel2();
+                    else if (isBossLvl2) ((PlayState) backState).goToLevel3();
                 }
                 State.SetState(backState);
                 mouseManager.leftPressed = false;
@@ -74,11 +70,9 @@ public class BattleState extends State {
             return;
         }
 
-        if (currentPhase == BattlePhase.PLAYER_TURN) {
-            handlePlayerInput();
-        } else if (currentPhase == BattlePhase.ENEMY_TURN) {
-            handleEnemyAI();
-        }
+        if (currentPhase == BattlePhase.PLAYER_TURN) handlePlayerInput();
+        else if (currentPhase == BattlePhase.COMPANION_TURN) handleCompanionAI();
+        else if (currentPhase == BattlePhase.ENEMY_TURN) handleEnemyAI();
     }
 
     private void handlePlayerInput() {
@@ -86,58 +80,62 @@ public class BattleState extends State {
             for (UIImageButton b : mainButtons) b.Update(mouseManager.mouseX, mouseManager.mouseY, mouseManager.leftPressed);
         } else if (currentMenu == BattleMenu.ATTACK) {
             if (mouseManager.leftPressed) {
-                enemy.hp -= 500; // Pentru test, il omori dintr-o lovitura
-                battleLog = "Ai lovit decisiv!";
+                enemy.hp -= 10000; // DMG Jucator
+                battleLog = "Ai atacat inamicul!";
                 mouseManager.leftPressed = false;
-                currentPhase = BattlePhase.ENEMY_TURN;
                 currentMenu = BattleMenu.MAIN;
+                // Daca e inamic de Lvl 2, ataca si Companionul
+                currentPhase = (enemy instanceof mn || isBossLvl2) ? BattlePhase.COMPANION_TURN : BattlePhase.ENEMY_TURN;
             }
         }
     }
 
+    private void handleCompanionAI() {
+        turnTimer++;
+        if (turnTimer > 40) {
+            enemy.hp -= 100; // DMG Companion
+            battleLog = "Companionul tau a atacat si el!";
+            turnTimer = 0;
+            currentPhase = BattlePhase.ENEMY_TURN;
+        }
+    }
+
     private void handleEnemyAI() {
-        enemyAttackTimer++;
-        if (enemyAttackTimer > 60) {
-            player.hp -= 10;
-            enemyAttackTimer = 0;
+        turnTimer++;
+        if (turnTimer > 40) {
+            player.hp -= 15;
+            battleLog = "Inamicul riposteaza!";
+            turnTimer = 0;
             currentPhase = BattlePhase.PLAYER_TURN;
         }
     }
 
     @Override
     public void Draw(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.BLACK);
-        g2d.fillRect(0, 0, 800, 600);
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, 800, 600);
 
-        // REPARATIE IMAGINE: Alegem ce desenam in functie de isBossBattle
-        if (isBossBattle) {
-            if (Assets.boss != null) {
-                g2d.drawImage(Assets.boss, 200, 30, 400, 350, null);
-            }
-        } else {
-            if (Assets.minion_full != null) {
-                g2d.drawImage(Assets.minion_full, 280, 50, 240, 320, null);
-            }
-        }
+        // Randare Inamic cu fallback
+        BufferedImage img = isBossLvl2 ? Assets.boss_lvl2 : (isBossLvl1 ? Assets.boss : Assets.minion_lvl2);
+        if (img == null) img = Assets.minion_full;
+        g.drawImage(img, 280, 50, 240, 320, null);
 
-        // UI de baza
-        g2d.setColor(new Color(20, 20, 20));
-        g2d.fillRect(10, 400, 780, 190);
-        g2d.setColor(Color.WHITE);
-        g2d.drawRect(10, 400, 780, 190);
+        // UI Box
+        g.setColor(new Color(30, 30, 30));
+        g.fillRect(10, 400, 780, 190);
+        g.setColor(Color.WHITE);
+        g.drawRect(10, 400, 780, 190);
 
-        if (currentMenu == BattleMenu.MAIN) {
-            String[] labels = {"Attack", "Skills", "Guard", "Items"};
+        g.drawString(battleLog, 220, 435);
+        g.drawString("HP: " + player.hp, 600, 440);
+        g.drawString("Enemy HP: " + enemy.hp, 600, 465);
+
+        if (currentPhase == BattlePhase.PLAYER_TURN && currentMenu == BattleMenu.MAIN) {
+            String[] labels = {"Ataca", "Apara", "Obiecte"};
             for (int i = 0; i < mainButtons.size(); i++) {
-                g2d.setColor(mainButtons.get(i).isHovering() ? Color.RED : Color.WHITE);
-                g2d.drawString(labels[i], 50, 445 + (i * 40));
+                g.setColor(mainButtons.get(i).isHovering() ? Color.RED : Color.WHITE);
+                g.drawString(labels[i], 50, 445 + (i * 40));
             }
         }
-        g2d.setColor(Color.LIGHT_GRAY);
-        g2d.drawString(battleLog, 220, 430);
-        g2d.setColor(Color.WHITE);
-        g2d.drawString("HP: " + player.hp, 550, 445);
-        g2d.drawString("Enemy HP: " + enemy.hp, 550, 470);
     }
 }

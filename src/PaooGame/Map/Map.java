@@ -1,5 +1,7 @@
 package PaooGame.Map;
 
+import PaooGame.Characters.LVL3.Bossfinal;
+import PaooGame.Characters.LVL3.Minionlvl3;
 import PaooGame.Tiles.Tile;
 import PaooGame.Graphics.GameCamera;
 import PaooGame.Characters.Entity;
@@ -78,6 +80,9 @@ public class Map {
         else if (id == 244) enemies.add(new Boss(posX, posY));
         else if (id == 741) enemies.add(new mn(posX, posY));
         else if (id == 773) enemies.add(new Bossss(posX, posY));
+        else if (id == 98) enemies.add(new Minionlvl3(posX, posY));
+        else if (id == 267) enemies.add(new Bossfinal(posX, posY));
+
     }
 
     public int getTileID(int x, int y, int layer) {
