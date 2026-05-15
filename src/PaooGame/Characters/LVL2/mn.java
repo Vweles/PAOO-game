@@ -14,7 +14,7 @@ public class mn extends MinionBANANA {
     private int myMaxHp = 350;
 
     public mn(int x, int y) {
-        // Nume, STR, INT, AGI, THO, Limbs, Limbs_at, LVL, x, y, speed, friend, follow, roam, job, interact, agresivitate, magicPower
+
         super("Vicar of Borrowed Glory", 20, 40, 25, 30, 2, 1, 10, x, y, 3, false, true, true, "Soul Mimic", false, 80, 15);
         this.hp = 350;
     }
@@ -30,7 +30,7 @@ public class mn extends MinionBANANA {
 
     @Override
     public void castSpell(Entity target) {
-        // Calculam MaxHP al tintei
+
         int targetMaxHp = 100 + 10 * target.tho + 5 * target.str;
         int bonusDamage = (target.hp > targetMaxHp / 2) ? 20 : 0;
         int totalDamage = this.spell_dmg + bonusDamage;
@@ -53,15 +53,15 @@ public class mn extends MinionBANANA {
     @Override
     public void draw(Graphics g, int xOffset, int yOffset) {
         if (hasStolenGlory) {
-            // Fix Color: am pus Color.GOLD sau varianta custom corecta
+
             g.setColor(new Color(255, 215, 0, 150));
             g.drawArc(x - xOffset, y - yOffset - 10, 30, 10, 0, 180);
         }
 
-        // Fix BufferedImage
+
         BufferedImage img = (Assets.minion_lvl2 != null) ? Assets.minion_lvl2 : Assets.minion_full;
         if (img != null) {
             g.drawImage(img, x - xOffset, y - yOffset, 32, 32, null);
         }
     }
-} // <--- Verifica sa ai aceasta acolada de inchidere a clasei!
+}

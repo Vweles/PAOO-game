@@ -4,15 +4,14 @@ import PaooGame.Characters.Entity;
 import PaooGame.Characters.MC;
 import PaooGame.Characters.LVL2.Bossss;
 import PaooGame.Characters.LVL2.mn;
+import PaooGame.Characters.LVL3.Bossfinal; // Am importat clasa Boss-ului tau Final
 import PaooGame.KeyImput.InputTaste;
 import PaooGame.KeyImput.MouseManager;
 import PaooGame.KeyImput.UIImageButton;
 import PaooGame.Graphics.Assets;
 import java.awt.*;
-import java.awt.image.BufferedImage; // IMPORT ADAUGAT
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-
-
 
 public class BattleState extends State {
     private MC player;
@@ -20,7 +19,7 @@ public class BattleState extends State {
     private InputTaste keyInput;
     private MouseManager mouseManager;
     private State backState;
-    private boolean isBossLvl1, isBossLvl2;
+    private boolean isBossLvl1, isBossLvl2, isBossLvl3; // Am adaugat isBossLvl3
 
     private enum BattlePhase { PLAYER_TURN, COMPANION_TURN, ENEMY_TURN, WIN, LOSE }
     private enum BattleMenu { MAIN, ATTACK, ITEMS }
@@ -40,6 +39,7 @@ public class BattleState extends State {
 
         this.isBossLvl1 = (enemy instanceof PaooGame.Characters.LVL1.Boss);
         this.isBossLvl2 = (enemy instanceof Bossss);
+        this.isBossLvl3 = (enemy instanceof Bossfinal); // Verificam direct daca inamicul este Bossfinal!
         InitButtons();
     }
 
@@ -55,17 +55,36 @@ public class BattleState extends State {
         if (enemy.hp <= 0 && currentPhase != BattlePhase.WIN) {
             enemy.hp = 0;
             currentPhase = BattlePhase.WIN;
-            battleLog = (isBossLvl1 || isBossLvl2) ? "Boss infrant! Portalul s-a deschis. Click!" : "Inamic invins! Click!";
+
+
+            if (isBossLvl3) {
+                battleLog = "Campionul lui Emilian a fost nimicit! Joc Terminat! Click pentru Victorie!";
+            } else {
+                battleLog = (isBossLvl1 || isBossLvl2) ? "Boss infrant! Portalul s-a deschis. Click!" : "Inamic invins! Click!";
+            }
         }
 
         if (currentPhase == BattlePhase.WIN || currentPhase == BattlePhase.LOSE) {
             if (mouseManager.leftPressed) {
                 if (currentPhase == BattlePhase.WIN) {
-                    if (isBossLvl1) ((PlayState) backState).goToLevel2();
-                    else if (isBossLvl2) ((PlayState) backState).goToLevel3();
+                    if (isBossLvl1) {
+                        ((PlayState) backState).goToLevel2();
+                        State.SetState(backState);
+                    } else if (isBossLvl2) {
+                        ((PlayState) backState).goToLevel3();
+                        State.SetState(backState);
+                    } else if (isBossLvl3) {
+
+                        ((PlayState) backState).triggerWinState();
+                    } else {
+
+                        State.SetState(backState);
+                    }
+                } else {
+                    State.SetState(backState);
                 }
-                State.SetState(backState);
                 mouseManager.leftPressed = false;
+                return;
             }
             return;
         }
@@ -84,7 +103,6 @@ public class BattleState extends State {
                 battleLog = "Ai atacat inamicul!";
                 mouseManager.leftPressed = false;
                 currentMenu = BattleMenu.MAIN;
-                // Daca e inamic de Lvl 2, ataca si Companionul
                 currentPhase = (enemy instanceof mn || isBossLvl2) ? BattlePhase.COMPANION_TURN : BattlePhase.ENEMY_TURN;
             }
         }
@@ -115,12 +133,22 @@ public class BattleState extends State {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 800, 600);
 
-        // Randare Inamic cu fallback
-        BufferedImage img = isBossLvl2 ? Assets.boss_lvl2 : (isBossLvl1 ? Assets.boss : Assets.minion_lvl2);
+
+        BufferedImage img;
+        if (isBossLvl3) {
+            img = (Assets.lvl3bosss != null) ? Assets.lvl3bosss : Assets.boss;
+        } else if (isBossLvl2) {
+            img = Assets.boss_lvl2;
+        } else if (isBossLvl1) {
+            img = Assets.boss;
+        } else {
+            img = Assets.minion_lvl2;
+        }
+
         if (img == null) img = Assets.minion_full;
         g.drawImage(img, 280, 50, 240, 320, null);
 
-        // UI Box
+
         g.setColor(new Color(30, 30, 30));
         g.fillRect(10, 400, 780, 190);
         g.setColor(Color.WHITE);

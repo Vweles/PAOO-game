@@ -33,20 +33,20 @@ public class Assets {
 
 
     public static void Init() {
-        // 1. Dale de baza
+
         Abis = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/abyss_tile.png")).crop(0, 0);
         Tile1 = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Tiles.png")).crop(0, 0);
         Wall = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Cracks.png")).crop(0, 0);
         tent = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Tentacle 1 Sheet.png")).crop(0, 0);
 
-        // 2. Eldritch Entity
+
         SpriteSheet eldritchDSheet = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Eldritch Entity Dormant.png"));
         endDf = eldritchDSheet.crop(0, 0, 96, 192);
 
         SpriteSheet tentacleASheet = new SpriteSheet(ImageLoader.LoadImage("/LVL1/pnguri/Eldritch Entity Awaken.png"));
         endAf = tentacleASheet.crop(0, 0, 96, 192);
 
-        // 3. Sub-tile-uri Eldritch
+
         for (int i = 0; i < 18; i++) {
             int row = i / 3;
             int col = i % 3;
@@ -54,7 +54,7 @@ public class Assets {
             eldritchDormant[i] = eldritchDSheet.crop(col * 32, row * 32, 32, 32);
         }
 
-        // 4. SpriteSheet joc (profesor)
+
         SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/textures/PaooGameSpriteSheet.png"));
         grass = sheet.crop(0, 0);
         soil = sheet.crop(1, 0);
@@ -62,7 +62,7 @@ public class Assets {
         mountain = sheet.crop(3, 0);
         tree = sheet.crop(3, 1);
 
-        // 5. Personaj (Animații 48x48)
+
         SpriteSheet charSheet = new SpriteSheet(ImageLoader.LoadImage("/MC/2.png"));
         for (int i = 0; i < 3; i++) {
             walkDown[i]  = cropChar(charSheet, i, 0);
@@ -77,7 +77,7 @@ public class Assets {
             crawlUp[i]    = cropChar(charSheet, i, 7);
         }
 
-        // 6. Inamici
+
         minion_full = ImageLoader.LoadImage("/LVL1/Characaters/silva_fiull.png");
         minion_no_arm = ImageLoader.LoadImage("/LVL1/Characaters/silva_faramana_dreapta.png");
         boss = ImageLoader.LoadImage("/LVL1/Characaters/Bosslvl1.png");
@@ -93,7 +93,7 @@ public class Assets {
     public static BufferedImage getLvl2Crop(int x, int y, int width, int height) {
         if (lvl2Sheet == null) return null;
         try {
-            // Folosim direct getSubimage pentru precizie pe pixeli
+
             return lvl2Sheet.getSubimage(x, y, width, height);
         } catch (Exception e) {
             System.err.println("Eroare crop Lvl2 la: " + x + "," + y);
@@ -111,7 +111,7 @@ public class Assets {
     }
     public static void InitLevel2() {
         lvl2Sheet = ImageLoader.LoadImage("/LVL2/tileset_lvl2.png");
-        // Placeholders sau imaginile reale pentru inamici Lvl 2
+
         minion_lvl2 = ImageLoader.LoadImage("/LVL2/implvl2.png");
         boss_lvl2 = ImageLoader.LoadImage("/LVL2/boslvl2.png");
     }

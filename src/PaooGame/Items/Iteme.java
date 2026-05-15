@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 public class Iteme {
     public enum ItemType {
         HEAD, CHEST, HANDS,
-        BOOTS, CLOAK, RING, // Sloturi noi
+        BOOTS, CLOAK, RING,
         ARTIFACT,
         POTION_HP, POTION_MANA
     }

@@ -28,6 +28,9 @@ public class PlayState extends State {
     private int width, height;
     private Random random = new Random();
 
+
+    private int currentLevelNo = 1;
+
     public PlayState(InputTaste keyInput, MouseManager mouseManager, int width, int height) {
         this.keyInput = keyInput;
         this.mouseManager = mouseManager;
@@ -35,11 +38,12 @@ public class PlayState extends State {
         this.height = height;
         this.camera = new GameCamera(width, height);
 
-        // Initializare harta nivel 1
+
         currentMap = new Map("/LVL1/layout1final.txt", "/LVL1/laye2final.txt", "/LVL1/layer3Lvl1.txt");
         this.checker = new CollisionChecker(currentMap);
+        this.currentLevelNo = 1;
 
-        // Initializare Jucator (MC)
+
         player = new MC("Erou", 100, 100, keyInput);
     }
 
@@ -53,19 +57,30 @@ public class PlayState extends State {
 
     @Override
     public void Update() {
-        // Update Jucator
+
         player.update(checker);
 
-        // Update Camera
+
+        if (player.hp <= 0) {
+            State.SetState(new LoseState(this, keyInput, mouseManager));
+            return;
+        }
+
+
+        if (currentMap != null && currentMap.toString().contains("LVL3") && currentMap.getEnemies().isEmpty()) {
+            triggerWinState();
+            return;
+        }
+
+
         if(currentMap != null) {
             camera.centerOnEntity(player);
             camera.checkBlankSpace(currentMap.getWidth() * Tile.TILE_WIDTH, currentMap.getHeight() * Tile.TILE_HEIGHT);
         }
 
-        // Update Companion daca exista
         if (companion != null) companion.update(checker);
 
-        // --- GESTIONARE MENIURI ---
+
         if (keyInput.esc) {
             State.SetState(new PauseState(this, keyInput, mouseManager));
             keyInput.esc = false;
@@ -78,10 +93,10 @@ public class PlayState extends State {
             return;
         }
 
-        // --- LOGICA POTIUNI ---
+
         handlePotions();
 
-        // --- COLIZIUNE INAMICI SI DROP LOOT ---
+
         if(currentMap != null) {
             ArrayList<Entity> enemies = currentMap.getEnemies();
             if (enemies != null) {
@@ -93,13 +108,9 @@ public class PlayState extends State {
                     Rectangle eRect = new Rectangle((int)e.x + e.solidArea.x, (int)e.y + e.solidArea.y, e.solidArea.width, e.solidArea.height);
 
                     if (pRect.intersects(eRect)) {
-                        // 1. Generam Drop-ul inainte de lupta sau la victorie
                         generateLootDrop();
-
-                        // 2. Curatam tastele sa nu ramana blocat eroul in Battle
                         keyInput.up = false; keyInput.down = false; keyInput.left = false; keyInput.right = false;
 
-                        // 3. Intram in BattleState
                         enemies.remove(i);
                         State.SetState(new BattleState(keyInput, mouseManager, player, e, this));
                         return;
@@ -110,7 +121,6 @@ public class PlayState extends State {
     }
 
     private void handlePotions() {
-        // Potiune HP
         if (keyInput.h_pot) {
             Iteme potiune = findItemInBag(Iteme.ItemType.POTION_HP);
             if (potiune != null) {
@@ -121,7 +131,6 @@ public class PlayState extends State {
             }
             keyInput.h_pot = false;
         }
-        // Potiune Mana
         if (keyInput.m_pot) {
             Iteme potiune = findItemInBag(Iteme.ItemType.POTION_MANA);
             if (potiune != null) {
@@ -151,6 +160,7 @@ public class PlayState extends State {
         player.getInventory().bag.add(drop);
         System.out.println("Loot gasit: " + drop.name + " [" + selectedType + "]");
     }
+
     public MouseManager getMouseManager() {
         return mouseManager;
     }
@@ -194,7 +204,6 @@ public class PlayState extends State {
         int screenX = (int)(player.x + 16 - camera.getxOffset());
         int screenY = (int)(player.y + 16 - camera.getyOffset());
 
-        // Prevenim erori de gradient daca coordonatele sunt negative
         RadialGradientPaint p = new RadialGradientPaint(
                 Math.max(1, screenX), Math.max(1, screenY), 280f,
                 new float[]{0.0f, 0.7f, 1.0f},
@@ -212,6 +221,7 @@ public class PlayState extends State {
         this.player.x = 200;
         this.player.y = 200;
         this.companion = new Comp("Guardian", 250, 250, player);
+        this.currentLevelNo = 2; // Actualizăm nivelul curent
     }
 
     public void goToLevel3() {
@@ -221,11 +231,30 @@ public class PlayState extends State {
         this.checker = new CollisionChecker(currentMap);
         this.player.x = 100;
         this.player.y = 100;
+        this.companion = null; // Eliminăm companionul dacă e cazul pe harta 3
+        this.currentLevelNo = 3; // Actualizăm nivelul curent
+    }
+
+    public void triggerWinState() {
+        State.SetState(new WinState(this, mouseManager));
+    }
+
+
+    public int getCurrentLevelNo() {
+        return currentLevelNo;
     }
 
     public void loadGameData(int hp, float x, float y, int level) {
+        this.currentLevelNo = level;
+
+        if(level == 1) {
+            this.currentMap = new Map("/LVL1/layout1final.txt", "/LVL1/laye2final.txt", "/LVL1/layer3Lvl1.txt");
+            this.companion = null;
+        }
         if(level == 2) goToLevel2();
         if(level == 3) goToLevel3();
+
+        this.checker = new CollisionChecker(currentMap);
         this.player.hp = hp;
         this.player.setX((int)x);
         this.player.setY((int)y);

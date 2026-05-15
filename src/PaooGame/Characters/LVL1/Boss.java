@@ -16,23 +16,23 @@ public class Boss extends Gru {
 
         super(
                 "Morbryx, Herald of Rot",
-                20,     // STR
-                16,     // INTE
-                10,     // AGI
-                25,     // THO
-                6,      // LIMBS_n
-                4,      // LIMBS_at
-                5,      // LVL
+                20,
+                16,
+                10,
+                25,
+                6,
+                4,
+                5,
                 x,
                 y,
-                1,      // speed
+                1,
                 false,
                 false,
                 true,
                 "Champion of the Rotten God",
                 true,
-                20,     // agresivitate
-                15      // rage
+                20,
+                15
         );
 
         this.hp = 500;
@@ -49,9 +49,7 @@ public class Boss extends Gru {
         this.rand = new Random();
     }
 
-    /**
-     * Boss-ul infecteaza tinta cu putregai toxic.
-     */
+
     public void rottenClaws(Entity target) {
 
         int damage = att_dmg_hit + corruptionPower;
@@ -64,10 +62,7 @@ public class Boss extends Gru {
                 " primeste " + damage + " damage de putreziciune!");
     }
 
-    /**
-     * Vraja AoE.
-     * O ploaie acida cade peste tot campul.
-     */
+
     public void toxicRain(Entity target) {
 
         if (this.mana < 25) {
@@ -90,9 +85,7 @@ public class Boss extends Gru {
                 + damage + " damage!");
     }
 
-    /**
-     * Aplica poison pe player.
-     */
+
     public void spreadDecay(Entity target) {
 
         target.hp -= poisonDamage;
@@ -104,9 +97,7 @@ public class Boss extends Gru {
                 " HP din cauza infectiei.");
     }
 
-    /**
-     * Cand hp-ul scade sub 50%, boss-ul intra in phase 2.
-     */
+
     public void checkPhase() {
 
         if (this.hp <= 250 && !phaseTwo) {
@@ -125,9 +116,7 @@ public class Boss extends Gru {
         }
     }
 
-    /**
-     * Ultimate attack.
-     */
+
     public void apocalypseOfRot(Entity target) {
 
         if (this.mana < 60) {
@@ -156,9 +145,7 @@ public class Boss extends Gru {
                 " DAMAGE FATAL!");
     }
 
-    /**
-     * AI simplu pentru boss.
-     */
+
     public void bossTurn(Entity target) {
 
         checkPhase();

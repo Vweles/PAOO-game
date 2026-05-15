@@ -9,14 +9,14 @@ import java.awt.image.BufferedImage;
 
 public class Comp extends Npc {
 
-    private Entity target; // Jucătorul pe care îl urmărește
+    private Entity target;
     private int animIndex = 0;
     private int speedCounter = 0;
     private final int ANIM_SPEED = 12;
-    private final int DISTANTA_STOP = 50; // Pixeli la care se oprește față de player
+    private final int DISTANTA_STOP = 50;
 
     public Comp(String NUME, int x, int y, Entity player) {
-        // NUME, STR, INTE, AGI, THO, Limbs_n, Limbs_at, LVL, x, y, speed, friend, follow, roam, job, interact
+
         super(NUME, 50, 50, 50, 50, 4, 2, 1, x, y, 3, true, true, false, "Guardian", true);
         this.target = player;
         this.solidArea = new Rectangle(12, 24, 24, 20);
@@ -26,7 +26,7 @@ public class Comp extends Npc {
     public void update(CollisionChecker checker) {
         boolean isMoving = false;
 
-        // Calculăm distanța folosind direct x și y din Entity (minuscule)
+
         float diffX = target.x - this.x;
         float diffY = target.y - this.y;
         double distanta = Math.sqrt(diffX * diffX + diffY * diffY);

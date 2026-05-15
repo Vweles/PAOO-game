@@ -20,14 +20,13 @@ public class Npc extends Entity {
 
     @Override
     public void update(CollisionChecker checker) {
-        // Logica de update pentru NPC (momentan goala)
+
     }
 
-    // ##########################################
-    // SEMN: REPARAT SEMNATURA PENTRU A CORESPUNDE CU ENTITY
+
     @Override
     public void draw(Graphics g, int cameraX, int cameraY) {
-        // NPC-urile neutre pot ramane invizibile sau poti pune un placeholder aici
+
     }
-    // ##########################################
+
 }

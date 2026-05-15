@@ -7,6 +7,7 @@ public class InputTaste implements KeyListener {
 
     public boolean up, down, left, right, attack, crawl, enter;
     public boolean esc;
+    public boolean s_key, l_key;
     public boolean inv, h_pot, m_pot;
 
     @Override
@@ -17,6 +18,8 @@ public class InputTaste implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
+        if(e.getKeyCode() == KeyEvent.VK_S) s_key = true;
+        if(e.getKeyCode() == KeyEvent.VK_L) l_key = true;
 
         if (code == KeyEvent.VK_W) up = true;
         if (code == KeyEvent.VK_S) down = true;
@@ -43,6 +46,9 @@ public class InputTaste implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
+
+        if(e.getKeyCode() == KeyEvent.VK_S) s_key = false;
+        if(e.getKeyCode() == KeyEvent.VK_L) l_key = false;
 
         if (code == KeyEvent.VK_W) up = false;
         if (code == KeyEvent.VK_S) down = false;

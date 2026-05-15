@@ -14,7 +14,7 @@ public abstract class Entity {
     public int speed;
 
 
-    public Rectangle solidArea = new Rectangle(0, 0, 48, 48); // Zona de coliziune (ajustabilă)
+    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public boolean collisionOn = false;
     public String directie = "down";
 

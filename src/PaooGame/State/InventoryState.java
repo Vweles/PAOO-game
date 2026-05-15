@@ -10,7 +10,7 @@ public class InventoryState extends State {
     private Iteme selectedItem = null;
     private int selectedIndex = -1;
 
-    // Sloturi Echipament
+
     private Rectangle headSlot = new Rectangle(380, 80, 40, 40);
     private Rectangle cloakSlot = new Rectangle(330, 130, 40, 40);
     private Rectangle chestSlot = new Rectangle(380, 130, 40, 40);
@@ -18,7 +18,7 @@ public class InventoryState extends State {
     private Rectangle ringSlot = new Rectangle(475, 130, 30, 30);
     private Rectangle bootsSlot = new Rectangle(380, 185, 40, 40);
 
-    // Grila Inventar
+
     private int startX = 100, startY = 320, slotSize = 40, spacing = 8;
     private Rectangle equipButton = new Rectangle(0, 0, 0, 0);
 
@@ -33,12 +33,12 @@ public class InventoryState extends State {
             backState.getKeyInput().inv = false;
         }
 
-        // --- LOGICA CLICK MOUSE ---
+
         if (backState.getMouseManager().isLeftPressed()) {
             int mx = backState.getMouseManager().getMouseX();
             int my = backState.getMouseManager().getMouseY();
 
-            // 1. Verificam daca am dat click pe un item din rucsac
+
             ArrayList<Iteme> bag = backState.getPlayer().getInventory().bag;
             for (int i = 0; i < bag.size(); i++) {
                 int col = i % 12;
@@ -53,7 +53,7 @@ public class InventoryState extends State {
                 }
             }
 
-            // 2. Verificam daca am dat click pe butonul de EQUIP
+
             if (selectedItem != null && equipButton.contains(mx, my)) {
                 backState.getPlayer().getInventory().equip(selectedItem);
                 backState.getPlayer().getInventory().bag.remove(selectedIndex);
@@ -61,7 +61,7 @@ public class InventoryState extends State {
                 selectedIndex = -1;
             }
 
-            // Consumam click-ul ca sa nu se repete
+
             backState.getMouseManager().setLeftPressed(false);
         }
     }
@@ -74,7 +74,7 @@ public class InventoryState extends State {
 
         MC p = backState.getPlayer();
 
-        // Deseneaza sloturile de sus
+
         drawEquippedItem(g, headSlot, p.getInventory().head, "CAP");
         drawEquippedItem(g, cloakSlot, p.getInventory().cloak, "CAPA");
         drawEquippedItem(g, chestSlot, p.getInventory().chest, "CORP");
@@ -82,7 +82,7 @@ public class InventoryState extends State {
         drawEquippedItem(g, ringSlot, p.getInventory().ring, "INEL");
         drawEquippedItem(g, bootsSlot, p.getInventory().boots, "BOOTS");
 
-        // Deseneaza rucsacul
+
         ArrayList<Iteme> bag = p.getInventory().bag;
         for (int i = 0; i < 48; i++) {
             int col = i % 12;
@@ -102,7 +102,7 @@ public class InventoryState extends State {
             }
         }
 
-        // --- FEREASTRA DETALII ---
+
         if (selectedItem != null) {
             int tx = 540, ty = 320;
             g.setColor(new Color(40, 40, 45));
@@ -121,7 +121,7 @@ public class InventoryState extends State {
             if(selectedItem.bonusAgi > 0) { g.drawString("+ " + selectedItem.bonusAgi + " AGI", tx + 10, py); py+=15; }
             if(selectedItem.bonusTho > 0) { g.drawString("+ " + selectedItem.bonusTho + " THO", tx + 10, py); py+=15; }
 
-            // Buton EQUIP
+
             equipButton = new Rectangle(tx + 50, ty + 120, 100, 30);
             g.setColor(Color.DARK_GRAY);
             g.fillRect(equipButton.x, equipButton.y, equipButton.width, equipButton.height);
@@ -130,7 +130,7 @@ public class InventoryState extends State {
             g.drawString("EQUIP", equipButton.x + 30, equipButton.y + 20);
         }
 
-        // Stats jucator
+
         drawPlayerStats(g, p);
     }
 

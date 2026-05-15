@@ -15,23 +15,23 @@ public class Silvani extends MinionBANANA {
 
         super(
                 "Silvani",
-                8,      // STR
-                14,     // INTE
-                10,     // AGI
-                12,     // THO
-                4,      // LIMBS_n
-                2,      // LIMBS_at
-                1,      // LVL
+                8,
+                14,
+                10,
+                12,
+                4,
+                2,
+                1,
                 x,
                 y,
-                2,      // speed
-                false,  // friend
-                false,  // follow
-                true,   // roam
+                2,
+                false,
+                false,
+                true,
                 "Forest Shaman",
                 true,
-                8,      // agresivitate
-                15      // magicPower
+                8,
+                15
         );
 
         this.naturePower = 20;
@@ -43,10 +43,7 @@ public class Silvani extends MinionBANANA {
         this.spell_dmg = 18;
     }
 
-    /**
-     * Atac magic principal.
-     * Silvani arunca spini si energie naturala.
-     */
+
     public void thornBurst(Entity target) {
 
         if (this.mana < 10) {
@@ -64,10 +61,7 @@ public class Silvani extends MinionBANANA {
                 + damage + " damage!");
     }
 
-    /**
-     * Vraja speciala:
-     * radacinile ies din pamant si blocheaza tinta.
-     */
+
     public void rootSnare(Entity target) {
 
         if (this.mana < 20) {
@@ -97,9 +91,7 @@ public class Silvani extends MinionBANANA {
         }
     }
 
-    /**
-     * Se vindeca folosind energia padurii.
-     */
+
     public void forestBlessing() {
 
         if (this.mana < 15) {
@@ -117,9 +109,7 @@ public class Silvani extends MinionBANANA {
                 + heal + " HP!");
     }
 
-    /**
-     * Ultimate attack.
-     */
+
     public void wrathOfTheForest(Entity target) {
 
         if (this.mana < 40) {

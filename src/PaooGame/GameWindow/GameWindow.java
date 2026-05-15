@@ -5,12 +5,12 @@ import java.awt.*;
 
 public class GameWindow
 {
-    private JFrame  wndFrame;       /*!< fereastra principala a jocului*/
-    private String  wndTitle;       /*!< titlul ferestrei*/
-    private int     wndWidth;       /*!< latimea ferestrei in pixeli*/
-    private int     wndHeight;      /*!< inaltimea ferestrei in pixeli*/
+    private JFrame  wndFrame;
+    private String  wndTitle;
+    private int     wndWidth;
+    private int     wndHeight;
 
-    private Canvas  canvas;         /*!< "panza/tablou" in care se poate desena*/
+    private Canvas  canvas;
 
     public GameWindow(String title, int width, int height){
         wndTitle    = title;
@@ -55,7 +55,7 @@ public class GameWindow
         return canvas;
     }
 
-    // ### REPARATIE: Am adaugat metoda asta ca sa poti accesa Frame-ul din Game.java ###
+
     public JFrame GetFrame() {
         return wndFrame;
     }

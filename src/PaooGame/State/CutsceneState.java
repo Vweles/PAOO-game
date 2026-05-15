@@ -25,23 +25,23 @@ public class CutsceneState extends State {
 
     @Override
     public void Update() {
-        // Folosim metoda noua isEnterPressed() ca sa nu detectam o apasare lunga
+
         boolean enterHit = keyInput.isEnterPressed();
 
         switch (stage) {
-            case 0: // Pornim primul video
+            case 0:
                 openVideo("intro0.mp4");
                 stage = 1;
                 break;
 
-            case 1: // Asteptam ca userul sa vada video 1 si sa apese Enter
+            case 1:
                 if (enterHit) {
                     openVideo("intro.mp4");
                     stage = 2;
                 }
                 break;
 
-            case 2: // Asteptam Enter dupa al doilea video pentru a intra in joc
+            case 2:
                 if (enterHit) {
                     State.SetState(playState);
                 }

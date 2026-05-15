@@ -92,7 +92,7 @@ public class Map {
     }
 
     public void Draw(Graphics g, GameCamera camera) {
-        // Folosim Tile.TILE_WIDTH (32) peste tot
+
         int xStart = (int) Math.max(0, camera.getxOffset() / Tile.TILE_WIDTH);
         int xEnd = (int) Math.min(width, (camera.getxOffset() + 800) / Tile.TILE_WIDTH + 1);
         int yStart = (int) Math.max(0, camera.getyOffset() / Tile.TILE_HEIGHT);

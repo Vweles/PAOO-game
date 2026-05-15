@@ -23,11 +23,11 @@ public class MenuState extends State {
         uiSheet = ImageLoader.LoadImage("/textures/Butoanele.png");
 
         if (uiSheet != null) {
-            // Calculam dimensiuni butoane (ajusteaza daca subimage nu e corect)
+
             int btnWidth = uiSheet.getWidth() / 2 - 40;
             int btnHeight = uiSheet.getHeight() / 3 - 30;
 
-            // Buton START
+
             BufferedImage[] startImgs = {
                     uiSheet.getSubimage(20, 15, btnWidth, btnHeight),
                     uiSheet.getSubimage(uiSheet.getWidth() / 2 + 10, 15, btnWidth, btnHeight)
@@ -37,7 +37,7 @@ public class MenuState extends State {
                 this.mouseManager.leftPressed = false;
             }));
 
-            // Buton EXIT
+
             BufferedImage[] exitImgs = {
                     uiSheet.getSubimage(20, 15 + (btnHeight + 30) * 2, btnWidth, btnHeight),
                     uiSheet.getSubimage(uiSheet.getWidth() / 2 + 10, 15 + (btnHeight + 30) * 2, btnWidth, btnHeight)

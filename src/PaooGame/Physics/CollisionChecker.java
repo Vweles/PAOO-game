@@ -12,7 +12,7 @@ public class CollisionChecker {
     }
 
     public void checkTile(Entity entity) {
-        // Calculam coordonatele cutiei de coliziune in lumea jocului
+
         int entityLeftX = (int) (entity.x + entity.solidArea.x);
         int entityRightX = (int) (entity.x + entity.solidArea.x + entity.solidArea.width);
         int entityTopY = (int) (entity.y + entity.solidArea.y);
@@ -56,9 +56,9 @@ public class CollisionChecker {
         }
     }
 
-    // Metoda utilitara care verifica daca un tile la o pozitie este solid pe orice strat
+
     private boolean checkSolid(int col, int row) {
-        // Verificam pe stratul 0 (Sol/Abis) si stratul 1 (Obiecte/Pereti/Eldritch)
+
         int tileIdL0 = map.getTileID(col, row, 0);
         int tileIdL1 = map.getTileID(col, row, 1);
 
@@ -66,7 +66,7 @@ public class CollisionChecker {
     }
 
     private boolean isTileSolid(int id) {
-        // ID-uri solide: 1 (Abis), 6 (Wall/Cracks), 144-173 (Eldritch Corp)
+
         return (id == 1 || id == 6 || (id >= 144 && id <= 197 || id ==13 || id ==257));
     }
 }
