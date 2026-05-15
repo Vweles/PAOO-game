@@ -11,10 +11,12 @@ public class MC extends Entity {
     private int animIndex = 0;
     private int speedCounter = 0;
     private final int ANIM_SPEED = 12;
+    private PaooGame.Items.Inventory inventory;
 
     public MC(String NUME, int x, int y, InputTaste keyInput) {
         super(NUME, 70, 10, 60, 60, 4, 2, 1, x, y, 4);
         this.keyInput = keyInput;
+        this.inventory = new PaooGame.Items.Inventory(this);
         // Definirea zonei de coliziune relative la sprite-ul de 48x48
         this.solidArea = new Rectangle(12, 24, 24, 20);
     }
@@ -89,4 +91,5 @@ public class MC extends Entity {
         }
     }
     // ##########################################
+    public PaooGame.Items.Inventory getInventory() { return inventory; }
 }

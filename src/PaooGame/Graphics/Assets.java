@@ -11,6 +11,8 @@ public class Assets {
     public static BufferedImage lvl3Sheet;
     public static BufferedImage lvl3minion,lvl3bosss;
 
+    public static BufferedImage itemSheet;
+
     public static BufferedImage[] btn_attack = new BufferedImage[2];
     public static BufferedImage[] btn_items = new BufferedImage[2];
     public static BufferedImage[] btn_identify = new BufferedImage[2];
@@ -26,6 +28,9 @@ public class Assets {
     public static BufferedImage[] crawlUp = new BufferedImage[2];
     public static BufferedImage[] eldritchAwaken = new BufferedImage[18];
     public static BufferedImage[] eldritchDormant = new BufferedImage[18];
+
+
+
 
     public static void Init() {
         // 1. Dale de baza
@@ -76,6 +81,7 @@ public class Assets {
         minion_full = ImageLoader.LoadImage("/LVL1/Characaters/silva_fiull.png");
         minion_no_arm = ImageLoader.LoadImage("/LVL1/Characaters/silva_faramana_dreapta.png");
         boss = ImageLoader.LoadImage("/LVL1/Characaters/Bosslvl1.png");
+        itemSheet = ImageLoader.LoadImage("/iteme/iteme.jpg");
     }
 
     private static BufferedImage cropChar(SpriteSheet sheet, int col, int row) {

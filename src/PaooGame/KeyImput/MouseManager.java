@@ -10,7 +10,10 @@ public class MouseManager implements MouseListener, MouseMotionListener {
     public int mouseX, mouseY;
 
     public MouseManager() { }
-
+    public boolean isLeftPressed() { return leftPressed; }
+    public void setLeftPressed(boolean state) { leftPressed = state; }
+    public int getMouseX() { return mouseX; }
+    public int getMouseY() { return mouseY; }
 
     @Override
     public void mouseMoved(MouseEvent e) {
@@ -28,8 +31,8 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) leftPressed = true;  // Click Stanga
-        if (e.getButton() == MouseEvent.BUTTON3) rightPressed = true; // Click Dreapta
+        if (e.getButton() == MouseEvent.BUTTON1) leftPressed = true;
+        if (e.getButton() == MouseEvent.BUTTON3) rightPressed = true;
     }
 
     @Override
