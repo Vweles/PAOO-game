@@ -121,7 +121,7 @@ public class ObiectivState extends State {
 
 
         g.setFont(new Font("Arial", Font.BOLD, 16));
-        g.setColor(new Color(255, 69, 0)); // Portocaliu aprins / Roșiatic
+        g.setColor(new Color(255, 69, 0));
         g.drawString(obiectivText, casetaX + 30, casetaY + casetaH - 60);
 
 

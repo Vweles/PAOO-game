@@ -73,25 +73,24 @@ public class BattleState extends State {
 
     private void InitButtons() {
         mainButtons = new ArrayList<>();
-        // Atac Fizic de bază
+
         mainButtons.add(new UIImageButton(30, 420, 140, 35, null, () -> { executePlayerBasicAttack(); }));
-        // Apărare (crește THO runda asta)
+
         mainButtons.add(new UIImageButton(30, 460, 140, 35, null, () -> {
             isPlayerDefending = true;
             battleLog = player.nume + " se apara! Toughness-ul ii va reduce daunele primite.";
             endPlayerTurn();
         }));
-        // Meniu Abilități
+
         mainButtons.add(new UIImageButton(30, 500, 140, 35, null, () -> { currentMenu = BattleMenu.SPELLS; }));
 
         spellButtons = new ArrayList<>();
-        // Spell 1: Lovituri Consecutive (STR / Arme active)
+
         spellButtons.add(new UIImageButton(30, 420, 200, 35, null, () -> { executeConsecutiveStrikes(); }));
-        // Spell 2: Explozie Arcana (INTE)
+
         spellButtons.add(new UIImageButton(30, 460, 200, 35, null, () -> { executeArcaneBlast(); }));
-        // Spell 3: Sacrificiu de Sânge
         spellButtons.add(new UIImageButton(30, 500, 200, 35, null, () -> { executeBloodSacrifice(); }));
-        // Înapoi la Principal
+
         spellButtons.add(new UIImageButton(30, 540, 200, 35, null, () -> { currentMenu = BattleMenu.MAIN; }));
     }
 

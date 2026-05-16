@@ -48,7 +48,7 @@ public class Tile {
 
     public static void InitLevel2Tiles() {
         if(Assets.lvl2Sheet == null) return;
-        // Maparea ID-urilor din fisierele tale .txt de la LVL 2
+
         new Tile(Assets.getLvl2Crop(0, 0, 32, 32), 3, false);
         new Tile(Assets.getLvl2Crop(0, 256, 32, 32), 257, true);
         new Tile(Assets.getLvl2Crop(384, 0, 32, 32), 13, true);
@@ -61,7 +61,7 @@ public class Tile {
         new Tile(Assets.getLvl3Crop(384, 64, 32, 32), 101, true);
         new Tile(Assets.getLvl3Crop(1088, 288, 32, 32), 431, true);
 
-        // Adauga aici restul de tile-uri pe care le ai in resurse
+
     }
 
     public void Draw(Graphics g, int x, int y) {
