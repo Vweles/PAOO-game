@@ -27,7 +27,6 @@ public class PlayState extends State {
     private CollisionChecker checker;
     private int width, height;
     private Random random = new Random();
-
     private int currentLevelNo = 1;
 
     public PlayState(InputTaste keyInput, MouseManager mouseManager, int width, int height) {
@@ -36,13 +35,10 @@ public class PlayState extends State {
         this.width = width;
         this.height = height;
         this.camera = new GameCamera(width, height);
-
         currentMap = new Map("/LVL1/layout1final.txt", "/LVL1/laye2final.txt", "/LVL1/layer3Lvl1.txt");
         this.checker = new CollisionChecker(currentMap);
         this.currentLevelNo = 1;
-
         player = new MC("Erou", 100, 100, keyInput);
-
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
@@ -60,11 +56,6 @@ public class PlayState extends State {
 
         if (player.hp <= 0) {
             State.SetState(new LoseState(this, keyInput, mouseManager));
-            return;
-        }
-
-        if (currentMap != null && currentMap.toString().contains("LVL3") && currentMap.getEnemies().isEmpty()) {
-            triggerWinState();
             return;
         }
 
@@ -109,7 +100,6 @@ public class PlayState extends State {
                     if (pRect.intersects(eRect)) {
                         generateLootDrop();
                         keyInput.up = false; keyInput.down = false; keyInput.left = false; keyInput.right = false;
-
                         enemies.remove(i);
                         State.SetState(new BattleState(keyInput, mouseManager, player, e, this));
                         return;
@@ -121,7 +111,6 @@ public class PlayState extends State {
 
     private void handlePotions() {
         if (keyInput.h_pot) {
-
             Iteme potiune = findSpecificPotion(Iteme.ItemType.POTION_HP);
             if (potiune != null) {
                 player.hp += potiune.bonusStr;
@@ -150,21 +139,17 @@ public class PlayState extends State {
     }
 
     private Iteme findSpecificPotion(Iteme.ItemType type) {
-
         for (Iteme i : player.getInventory().bag) {
             if (i.type == type && i.name.contains("Mica")) return i;
         }
-
         for (Iteme i : player.getInventory().bag) {
             if (i.type == type && i.name.contains("Medie")) return i;
         }
-
         for (Iteme i : player.getInventory().bag) {
             if (i.type == type && i.name.contains("Mare")) return i;
         }
         return null;
     }
-
 
     private Iteme findItemInBag(Iteme.ItemType type) {
         for (Iteme i : player.getInventory().bag) {
@@ -174,21 +159,15 @@ public class PlayState extends State {
     }
 
     private void generateLootDrop() {
-
         Iteme.ItemType[] dropTypes = {
                 Iteme.ItemType.HEAD, Iteme.ItemType.CHEST, Iteme.ItemType.HANDS,
                 Iteme.ItemType.BOOTS, Iteme.ItemType.CLOAK, Iteme.ItemType.RING
         };
-
         Iteme.ItemType selectedEquipType = dropTypes[random.nextInt(dropTypes.length)];
-
         Iteme dropEquip = ItemGenerator.generateRandomItem(selectedEquipType);
         player.getInventory().bag.add(dropEquip);
         System.out.println("[DROP] Ai obtinut echipament: " + dropEquip.name);
-
-
         Iteme.ItemType selectedPotionType = random.nextBoolean() ? Iteme.ItemType.POTION_HP : Iteme.ItemType.POTION_MANA;
-
         Iteme dropPotion = ItemGenerator.generateRandomItem(selectedPotionType);
         player.getInventory().bag.add(dropPotion);
         System.out.println("[DROP EXTRA] Inamicul a lasat si o potiune: " + dropPotion.name);
@@ -205,19 +184,14 @@ public class PlayState extends State {
         } else {
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, width, height);
-
             int xOff = (int)camera.getxOffset();
             int yOff = (int)camera.getyOffset();
-
             currentMap.Draw(g, camera);
-
             if (companion != null) companion.draw(g, xOff, yOff);
-
             ArrayList<Entity> enemies = currentMap.getEnemies();
             if (enemies != null) {
                 for (Entity e : enemies) e.draw(g, xOff, yOff);
             }
-
             player.draw(g, xOff, yOff);
             drawCircularFog(g);
         }
@@ -236,7 +210,6 @@ public class PlayState extends State {
         Graphics2D g2d = (Graphics2D) g;
         int screenX = (int)(player.x + 16 - camera.getxOffset());
         int screenY = (int)(player.y + 16 - camera.getyOffset());
-
         RadialGradientPaint p = new RadialGradientPaint(
                 Math.max(1, screenX), Math.max(1, screenY), 280f,
                 new float[]{0.0f, 0.7f, 1.0f},
@@ -255,7 +228,6 @@ public class PlayState extends State {
         this.player.y = 200;
         this.companion = new Comp("Guardian", 250, 250, player);
         this.currentLevelNo = 2;
-
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
@@ -268,7 +240,6 @@ public class PlayState extends State {
         this.player.y = 100;
         this.companion = null;
         this.currentLevelNo = 3;
-
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
@@ -282,19 +253,16 @@ public class PlayState extends State {
 
     public void loadGameData(int hp, float x, float y, int level) {
         this.currentLevelNo = level;
-
         if(level == 1) {
             this.currentMap = new Map("/LVL1/layout1final.txt", "/LVL1/laye2final.txt", "/LVL1/layer3Lvl1.txt");
             this.companion = null;
         }
         if(level == 2) goToLevel2();
         if(level == 3) goToLevel3();
-
         this.checker = new CollisionChecker(currentMap);
         this.player.hp = hp;
         this.player.setX((int)x);
         this.player.setY((int)y);
-
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 

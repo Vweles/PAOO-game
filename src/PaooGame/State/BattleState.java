@@ -25,7 +25,6 @@ public class BattleState extends State {
     private MouseManager mouseManager;
     private State backState;
     private Random rand = new Random();
-
     private boolean isBossLvl1, isBossLvl2, isBossLvl3;
 
     private enum BattlePhase { DETERMINING_INITIATIVE, PLAYER_TURN, COMPANION_TURN, ENEMY_TURN, WIN, LOSE }
@@ -33,10 +32,8 @@ public class BattleState extends State {
 
     private BattlePhase currentPhase = BattlePhase.DETERMINING_INITIATIVE;
     private BattleMenu currentMenu = BattleMenu.MAIN;
-
     private ArrayList<UIImageButton> mainButtons;
     private ArrayList<UIImageButton> spellButtons;
-
     private String battleLog = "Incepe lupta...";
     private int turnTimer = 0;
     private boolean isPlayerDefending = false;
@@ -47,21 +44,16 @@ public class BattleState extends State {
         this.player = player;
         this.enemy = enemy;
         this.backState = backState;
-
         this.isBossLvl1 = (enemy instanceof Boss);
         this.isBossLvl2 = (enemy instanceof Bossss);
         this.isBossLvl3 = (enemy instanceof Bossfinal);
-
-
         player.updateStatsAfterInjury();
         enemy.updateStatsAfterInjury();
-
         InitButtons();
         determineFirstTurn();
     }
 
     private void determineFirstTurn() {
-
         if (player.agi >= enemy.agi) {
             currentPhase = BattlePhase.PLAYER_TURN;
             battleLog = player.nume + " are agilitate mai mare (" + player.agi + ") si incepe primul!";
@@ -73,24 +65,18 @@ public class BattleState extends State {
 
     private void InitButtons() {
         mainButtons = new ArrayList<>();
-
         mainButtons.add(new UIImageButton(30, 420, 140, 35, null, () -> { executePlayerBasicAttack(); }));
-
         mainButtons.add(new UIImageButton(30, 460, 140, 35, null, () -> {
             isPlayerDefending = true;
             battleLog = player.nume + " se apara! Toughness-ul ii va reduce daunele primite.";
             endPlayerTurn();
         }));
-
         mainButtons.add(new UIImageButton(30, 500, 140, 35, null, () -> { currentMenu = BattleMenu.SPELLS; }));
 
         spellButtons = new ArrayList<>();
-
         spellButtons.add(new UIImageButton(30, 420, 200, 35, null, () -> { executeConsecutiveStrikes(); }));
-
         spellButtons.add(new UIImageButton(30, 460, 200, 35, null, () -> { executeArcaneBlast(); }));
         spellButtons.add(new UIImageButton(30, 500, 200, 35, null, () -> { executeBloodSacrifice(); }));
-
         spellButtons.add(new UIImageButton(30, 540, 200, 35, null, () -> { currentMenu = BattleMenu.MAIN; }));
     }
 
@@ -113,10 +99,17 @@ public class BattleState extends State {
             if (mouseManager.leftPressed) {
                 mouseManager.leftPressed = false;
                 if (currentPhase == BattlePhase.WIN) {
-                    if (isBossLvl1) ((PlayState) backState).goToLevel2();
-                    else if (isBossLvl2) ((PlayState) backState).goToLevel3();
-                    else if (isBossLvl3) ((PlayState) backState).triggerWinState();
-                    State.SetState(backState);
+                    if (isBossLvl1) {
+                        ((PlayState) backState).goToLevel2();
+                        State.SetState(backState);
+                    } else if (isBossLvl2) {
+                        ((PlayState) backState).goToLevel3();
+                        State.SetState(backState);
+                    } else if (isBossLvl3) {
+                        ((PlayState) backState).triggerWinState();
+                    } else {
+                        State.SetState(backState);
+                    }
                 } else {
                     State.SetState(backState);
                 }
@@ -139,8 +132,6 @@ public class BattleState extends State {
         if (mouseManager.leftPressed) mouseManager.leftPressed = false;
     }
 
-
-
     private void executePlayerBasicAttack() {
         int damage = player.att_dmg_hit - (enemy.tho / 3);
         if (damage < 1) damage = 1;
@@ -155,7 +146,6 @@ public class BattleState extends State {
         int activeArms = 0;
         if (player.limbsStatus[Entity.R_ARM]) activeArms++;
         if (player.limbsStatus[Entity.L_ARM]) activeArms++;
-
         int hits = activeArms + 1;
         int totalDamage = 0;
         for (int i = 0; i < hits; i++) {
@@ -204,19 +194,12 @@ public class BattleState extends State {
         }
     }
 
-
-
     private void handleEnemyAI() {
         turnTimer++;
         if (turnTimer > 50) {
             int hpInainte = player.hp;
-            int enemyHpInainte = enemy.hp;
-            int enemyManaInainte = enemy.mana;
-
-
             int temporaryThoSave = player.tho;
             if (isPlayerDefending) player.tho *= 2;
-
 
             if (enemy instanceof Silvani) {
                 Silvani s = (Silvani) enemy;
@@ -226,14 +209,11 @@ public class BattleState extends State {
                 else if (r == 2 && s.mana >= 15 && s.hp < 100) { s.forestBlessing(); battleLog = s.nume + " absoarbe natura si foloseste Forest Blessing (Vindecare)!"; }
                 else { s.thornBurst(player); battleLog = s.nume + " arunca spini ascutiti prin Thorn Burst!"; }
             }
-
             else if (enemy instanceof Boss) {
                 Boss b = (Boss) enemy;
-
                 b.bossTurn(player);
                 battleLog = b.nume + " isi schimba tactica si ataca imprevizibil!";
             }
-
             else if (enemy instanceof mn) {
                 mn minion2 = (mn) enemy;
                 if (rand.nextBoolean()) {
@@ -245,7 +225,6 @@ public class BattleState extends State {
                 }
                 minion2.humbleReset();
             }
-
             else if (enemy instanceof Bossss) {
                 Bossss b2 = (Bossss) enemy;
                 int r = rand.nextInt(4);
@@ -254,7 +233,6 @@ public class BattleState extends State {
                 else if (r == 2 && b2.hp < 2000) { b2.soulSacrifice(); battleLog = b2.nume + " ofera Soul Sacrifice! Se vindeca si aduna furie."; }
                 else { b2.specialAttack(player); battleLog = b2.nume + " executa atacul sau SPECIAL catastrofal!"; }
             }
-
             else if (enemy instanceof Minionlvl3) {
                 Minionlvl3 m3 = (Minionlvl3) enemy;
                 int r = rand.nextInt(2);
@@ -262,7 +240,6 @@ public class BattleState extends State {
                 else { m3.castSpell(player); battleLog = m3.nume + " canalizeaza un blestem prin Cast Spell!"; }
                 m3.lingusireZeiasca();
             }
-
             else if (enemy instanceof Bossfinal) {
                 Bossfinal bf = (Bossfinal) enemy;
                 int r = rand.nextInt(4);
@@ -271,7 +248,6 @@ public class BattleState extends State {
                 else if (r == 2) { bf.specialAttack(player); battleLog = bf.nume + " loveste decisiv cu atacul SPECIAL!"; }
                 else { bf.platestePentruVictorie(); battleLog = bf.nume + " Plateste pentru Victorie! Se vindeca si devine furios."; }
             }
-
             else {
                 if (enemy instanceof Inamic) {
                     Inamic generalEnemy = (Inamic) enemy;
@@ -286,16 +262,13 @@ public class BattleState extends State {
                 }
             }
 
-
             if (isPlayerDefending) player.tho = temporaryThoSave;
             isPlayerDefending = false;
-
 
             int dmgPrimit = hpInainte - player.hp;
             if (dmgPrimit > 0) {
                 battleLog += " (Ai pierdut " + dmgPrimit + " HP)";
             }
-
             turnTimer = 0;
             currentPhase = BattlePhase.PLAYER_TURN;
         }
@@ -305,7 +278,6 @@ public class BattleState extends State {
     public void Draw(Graphics g) {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 800, 600);
-
         BufferedImage img;
         if (isBossLvl3) img = (Assets.lvl3bosss != null) ? Assets.lvl3bosss : Assets.boss;
         else if (isBossLvl2) img = Assets.boss_lvl2;
@@ -316,23 +288,19 @@ public class BattleState extends State {
         if (img == null) img = Assets.minion_full;
         g.drawImage(img, 280, 50, 240, 320, null);
 
-
         g.setColor(new Color(20, 20, 35));
         g.fillRect(10, 400, 780, 190);
         g.setColor(Color.CYAN);
         g.drawRect(10, 400, 780, 190);
 
-
         g.setFont(new Font("Arial", Font.PLAIN, 14));
         g.setColor(Color.WHITE);
         g.drawString(battleLog, 240, 435);
-
 
         g.setColor(Color.GREEN);
         g.drawString("Jucator: " + player.hp + " HP | " + player.mana + " MP", 550, 540);
         g.setColor(Color.RED);
         g.drawString(enemy.nume + ": " + enemy.hp + " HP | " + enemy.mana + " MP", 550, 565);
-
 
         if (currentPhase == BattlePhase.PLAYER_TURN) {
             g.setFont(new Font("Arial", Font.BOLD, 15));
