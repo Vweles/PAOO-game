@@ -13,6 +13,8 @@ public class Assets {
 
     public static BufferedImage itemSheet;
 
+    public static BufferedImage[] potionHP = new BufferedImage[3];
+    public static BufferedImage[] potionMana = new BufferedImage[3];
     public static BufferedImage[] btn_attack = new BufferedImage[2];
     public static BufferedImage[] btn_items = new BufferedImage[2];
     public static BufferedImage[] btn_identify = new BufferedImage[2];
@@ -122,5 +124,30 @@ public class Assets {
         lvl3bosss = ImageLoader.LoadImage("/LVL3/bossslvl3.png");
 
 
+    }
+    public static void initPotions() {
+        try {
+
+            BufferedImage potionSheet = javax.imageio.ImageIO.read(Assets.class.getResourceAsStream("/iteme/potiuni.jpg"));
+
+
+            int potTileW = potionSheet.getWidth() / 3;
+            int potTileH = potionSheet.getHeight() / 2;
+
+
+            potionHP[0] = potionSheet.getSubimage(0 * potTileW, 0 * potTileH, potTileW, potTileH);
+            potionHP[1] = potionSheet.getSubimage(1 * potTileW, 0 * potTileH, potTileW, potTileH);
+            potionHP[2] = potionSheet.getSubimage(2 * potTileW, 0 * potTileH, potTileW, potTileH);
+
+
+            potionMana[0] = potionSheet.getSubimage(0 * potTileW, 1 * potTileH, potTileW, potTileH);
+            potionMana[1] = potionSheet.getSubimage(1 * potTileW, 1 * potTileH, potTileW, potTileH);
+            potionMana[2] = potionSheet.getSubimage(2 * potTileW, 1 * potTileH, potTileW, potTileH);
+
+            System.out.println("Imaginile pentru potiuni au fost incarcate si decupate cu succes!");
+        } catch (Exception e) {
+            System.out.println("EROARE: Nu s-a putut incarca /iteme/potiuni.jpeg! Verifica daca path-ul si extensia sunt corecte.");
+            e.printStackTrace();
+        }
     }
 }

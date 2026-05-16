@@ -43,7 +43,6 @@ public class PlayState extends State {
 
         player = new MC("Erou", 100, 100, keyInput);
 
-
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
@@ -88,9 +87,7 @@ public class PlayState extends State {
             return;
         }
 
-
         if (keyInput.o_tasta) {
-
             keyInput.up = false; keyInput.down = false; keyInput.left = false; keyInput.right = false;
             keyInput.o_tasta = false;
             State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
@@ -124,26 +121,50 @@ public class PlayState extends State {
 
     private void handlePotions() {
         if (keyInput.h_pot) {
-            Iteme potiune = findItemInBag(Iteme.ItemType.POTION_HP);
+
+            Iteme potiune = findSpecificPotion(Iteme.ItemType.POTION_HP);
             if (potiune != null) {
-                player.hp += 50;
+                player.hp += potiune.bonusStr;
                 int maxHP = 100 + 10 * player.tho + 5 * player.str;
                 if (player.hp > maxHP) player.hp = maxHP;
                 player.getInventory().bag.remove(potiune);
+                System.out.println("Consumat: " + potiune.name + ". HP actual: " + player.hp);
+            } else {
+                System.out.println("Nu mai ai potiuni de HP!");
             }
             keyInput.h_pot = false;
         }
         if (keyInput.m_pot) {
-            Iteme potiune = findItemInBag(Iteme.ItemType.POTION_MANA);
+            Iteme potiune = findSpecificPotion(Iteme.ItemType.POTION_MANA);
             if (potiune != null) {
-                player.mana += 40;
+                player.mana += potiune.bonusStr;
                 int maxMana = 150 + 15 * player.inte;
                 if (player.mana > maxMana) player.mana = maxMana;
                 player.getInventory().bag.remove(potiune);
+                System.out.println("Consumat: " + potiune.name + ". Mana actuala: " + player.mana);
+            } else {
+                System.out.println("Nu mai ai potiuni de Mana!");
             }
             keyInput.m_pot = false;
         }
     }
+
+    private Iteme findSpecificPotion(Iteme.ItemType type) {
+
+        for (Iteme i : player.getInventory().bag) {
+            if (i.type == type && i.name.contains("Mica")) return i;
+        }
+
+        for (Iteme i : player.getInventory().bag) {
+            if (i.type == type && i.name.contains("Medie")) return i;
+        }
+
+        for (Iteme i : player.getInventory().bag) {
+            if (i.type == type && i.name.contains("Mare")) return i;
+        }
+        return null;
+    }
+
 
     private Iteme findItemInBag(Iteme.ItemType type) {
         for (Iteme i : player.getInventory().bag) {
@@ -153,14 +174,24 @@ public class PlayState extends State {
     }
 
     private void generateLootDrop() {
+
         Iteme.ItemType[] dropTypes = {
                 Iteme.ItemType.HEAD, Iteme.ItemType.CHEST, Iteme.ItemType.HANDS,
                 Iteme.ItemType.BOOTS, Iteme.ItemType.CLOAK, Iteme.ItemType.RING
         };
-        Iteme.ItemType selectedType = dropTypes[random.nextInt(dropTypes.length)];
-        Iteme drop = ItemGenerator.generateRandomItem(selectedType);
-        player.getInventory().bag.add(drop);
-        System.out.println("Loot gasit: " + drop.name + " [" + selectedType + "]");
+
+        Iteme.ItemType selectedEquipType = dropTypes[random.nextInt(dropTypes.length)];
+
+        Iteme dropEquip = ItemGenerator.generateRandomItem(selectedEquipType);
+        player.getInventory().bag.add(dropEquip);
+        System.out.println("[DROP] Ai obtinut echipament: " + dropEquip.name);
+
+
+        Iteme.ItemType selectedPotionType = random.nextBoolean() ? Iteme.ItemType.POTION_HP : Iteme.ItemType.POTION_MANA;
+
+        Iteme dropPotion = ItemGenerator.generateRandomItem(selectedPotionType);
+        player.getInventory().bag.add(dropPotion);
+        System.out.println("[DROP EXTRA] Inamicul a lasat si o potiune: " + dropPotion.name);
     }
 
     public MouseManager getMouseManager() {
@@ -225,7 +256,6 @@ public class PlayState extends State {
         this.companion = new Comp("Guardian", 250, 250, player);
         this.currentLevelNo = 2;
 
-
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
@@ -238,7 +268,6 @@ public class PlayState extends State {
         this.player.y = 100;
         this.companion = null;
         this.currentLevelNo = 3;
-
 
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
@@ -265,7 +294,6 @@ public class PlayState extends State {
         this.player.hp = hp;
         this.player.setX((int)x);
         this.player.setY((int)y);
-
 
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
