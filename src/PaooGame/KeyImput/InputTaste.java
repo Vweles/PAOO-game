@@ -9,6 +9,7 @@ public class InputTaste implements KeyListener {
     public boolean esc;
     public boolean s_key, l_key;
     public boolean inv, h_pot, m_pot;
+    public boolean o_tasta;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -34,6 +35,10 @@ public class InputTaste implements KeyListener {
         if (code == KeyEvent.VK_I) inv = true;
         if (code == KeyEvent.VK_H) h_pot = true;
         if (code == KeyEvent.VK_M) m_pot = true;
+
+        if (code == KeyEvent.VK_O) o_tasta = true;
+
+
 
 
         if (code == KeyEvent.VK_C) {
@@ -63,6 +68,8 @@ public class InputTaste implements KeyListener {
         if (code == KeyEvent.VK_I) inv = false;
         if (code == KeyEvent.VK_H) h_pot = false;
         if (code == KeyEvent.VK_M) m_pot = false;
+
+        if (code == KeyEvent.VK_O) o_tasta = false;
     }
 
     public boolean isEnterPressed() {

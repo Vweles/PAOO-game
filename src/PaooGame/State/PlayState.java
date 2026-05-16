@@ -28,7 +28,6 @@ public class PlayState extends State {
     private int width, height;
     private Random random = new Random();
 
-
     private int currentLevelNo = 1;
 
     public PlayState(InputTaste keyInput, MouseManager mouseManager, int width, int height) {
@@ -38,13 +37,14 @@ public class PlayState extends State {
         this.height = height;
         this.camera = new GameCamera(width, height);
 
-
         currentMap = new Map("/LVL1/layout1final.txt", "/LVL1/laye2final.txt", "/LVL1/layer3Lvl1.txt");
         this.checker = new CollisionChecker(currentMap);
         this.currentLevelNo = 1;
 
-
         player = new MC("Erou", 100, 100, keyInput);
+
+
+        State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
     public InputTaste getKeyInput() {
@@ -57,21 +57,17 @@ public class PlayState extends State {
 
     @Override
     public void Update() {
-
         player.update(checker);
-
 
         if (player.hp <= 0) {
             State.SetState(new LoseState(this, keyInput, mouseManager));
             return;
         }
 
-
         if (currentMap != null && currentMap.toString().contains("LVL3") && currentMap.getEnemies().isEmpty()) {
             triggerWinState();
             return;
         }
-
 
         if(currentMap != null) {
             camera.centerOnEntity(player);
@@ -79,7 +75,6 @@ public class PlayState extends State {
         }
 
         if (companion != null) companion.update(checker);
-
 
         if (keyInput.esc) {
             State.SetState(new PauseState(this, keyInput, mouseManager));
@@ -94,8 +89,15 @@ public class PlayState extends State {
         }
 
 
-        handlePotions();
+        if (keyInput.o_tasta) {
 
+            keyInput.up = false; keyInput.down = false; keyInput.left = false; keyInput.right = false;
+            keyInput.o_tasta = false;
+            State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
+            return;
+        }
+
+        handlePotions();
 
         if(currentMap != null) {
             ArrayList<Entity> enemies = currentMap.getEnemies();
@@ -221,7 +223,10 @@ public class PlayState extends State {
         this.player.x = 200;
         this.player.y = 200;
         this.companion = new Comp("Guardian", 250, 250, player);
-        this.currentLevelNo = 2; // Actualizăm nivelul curent
+        this.currentLevelNo = 2;
+
+
+        State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
     public void goToLevel3() {
@@ -231,14 +236,16 @@ public class PlayState extends State {
         this.checker = new CollisionChecker(currentMap);
         this.player.x = 100;
         this.player.y = 100;
-        this.companion = null; // Eliminăm companionul dacă e cazul pe harta 3
-        this.currentLevelNo = 3; // Actualizăm nivelul curent
+        this.companion = null;
+        this.currentLevelNo = 3;
+
+
+        State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
     public void triggerWinState() {
         State.SetState(new WinState(this, mouseManager));
     }
-
 
     public int getCurrentLevelNo() {
         return currentLevelNo;
@@ -258,6 +265,9 @@ public class PlayState extends State {
         this.player.hp = hp;
         this.player.setX((int)x);
         this.player.setY((int)y);
+
+
+        State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
     public Map getCurrentMap() { return currentMap; }
