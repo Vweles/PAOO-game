@@ -23,8 +23,10 @@ public class Npc extends Entity {
 
     }
 
+
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics g, int cameraX, int cameraY) {
 
     }
+
 }

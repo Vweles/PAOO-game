@@ -22,9 +22,15 @@ public class UIImageButton {
         bounds = new Rectangle(x, y, width, height);
     }
 
+
+    public boolean isHovering() {
+        return hovering;
+    }
+
     public void Update(int mouseX, int mouseY, boolean leftPressed) {
 
         hovering = (bounds != null && bounds.contains(mouseX, mouseY));
+
 
         if (hovering && leftPressed && onClick != null) {
             onClick.run();
@@ -32,7 +38,8 @@ public class UIImageButton {
     }
 
     public void Draw(Graphics g) {
-        if (images == null) return;
+
+        if (images == null || images[0] == null) return;
 
         if (hovering) {
             g.drawImage(images[1], x, y, width, height, null);

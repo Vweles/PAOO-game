@@ -19,10 +19,25 @@ public class GameCamera {
     }
 
     public void checkBlankSpace(int worldWidth, int worldHeight) {
+
+        float viewWidth = wndWidth / zoom;
+        float viewHeight = wndHeight / zoom;
+
+
         if (xOffset < 0) xOffset = 0;
         if (yOffset < 0) yOffset = 0;
-        if (xOffset > worldWidth - (wndWidth / zoom)) xOffset = worldWidth - (wndWidth / zoom);
-        if (yOffset > worldHeight - (wndHeight / zoom)) yOffset = worldHeight - (wndHeight / zoom);
+
+
+        if (xOffset > worldWidth - viewWidth) {
+            xOffset = worldWidth - viewWidth;
+        }
+        if (yOffset > worldHeight - viewHeight) {
+            yOffset = worldHeight - viewHeight;
+        }
+
+
+        if(worldWidth < viewWidth) xOffset = 0;
+        if(worldHeight < viewHeight) yOffset = 0;
     }
 
     public void setZoom(float zoom) { this.zoom = zoom; }

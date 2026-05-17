@@ -15,11 +15,11 @@ public class Game implements Runnable {
     private BufferStrategy bs;
     private Graphics g;
 
-    // Input
+
     private InputTaste keyInput = new InputTaste();
     private MouseManager mouseManager = new MouseManager();
 
-    // Stari
+
     private State introState;
     private State menuState;
     private State cutsceneState;
@@ -30,29 +30,34 @@ public class Game implements Runnable {
     }
 
     private void InitGame() {
+
         wnd.BuildGameWindow();
+
+
         wnd.GetCanvas().addKeyListener(keyInput);
         wnd.GetCanvas().addMouseListener(mouseManager);
         wnd.GetCanvas().addMouseMotionListener(mouseManager);
+        wnd.GetFrame().addMouseListener(mouseManager);
 
         Assets.Init();
 
-        // 1. Initializam PlayState (destinatia finala)
-        playState = new PlayState(keyInput, wnd.GetWndWidth(), wnd.GetWndHeight());
 
-        // 2. Initializam CutsceneState (care stie sa treaca la playState)
+        playState = new PlayState(keyInput, mouseManager, wnd.GetWndWidth(), wnd.GetWndHeight());
+
+
         cutsceneState = new CutsceneState(keyInput, (PlayState)playState);
 
-        // 3. Initializam MenuState (care stie sa treaca la cutsceneState)
+
         menuState = new MenuState(keyInput, mouseManager, cutsceneState);
 
-        // 4. Initializam IntroState (care stie sa treaca la menuState)
+
         introState = new IntroState(keyInput, wnd.GetWndWidth(), wnd.GetWndHeight(), menuState);
 
-        // Start joc!
+
         State.SetState(introState);
     }
 
+    @Override
     public void run() {
         InitGame();
         long oldTime = System.nanoTime();
@@ -69,23 +74,11 @@ public class Game implements Runnable {
         }
     }
 
-    public synchronized void StartGame() {
-        if (!runState) {
-            runState = true;
-            gameThread = new Thread(this);
-            gameThread.start();
-        }
-    }
-
-    public synchronized void StopGame() {
-        if (runState) {
-            runState = false;
-            try { gameThread.join(); } catch (InterruptedException e) { e.printStackTrace(); }
-        }
-    }
-
     private void Update() {
-        if (State.GetState() != null) State.GetState().Update();
+
+        if (State.GetState() != null) {
+            State.GetState().Update();
+        }
     }
 
     private void Draw() {
@@ -97,9 +90,31 @@ public class Game implements Runnable {
         g = bs.getDrawGraphics();
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
 
-        if (State.GetState() != null) State.GetState().Draw(g);
+
+        if (State.GetState() != null) {
+            State.GetState().Draw(g);
+        }
 
         bs.show();
         g.dispose();
+    }
+
+    public synchronized void StartGame() {
+        if (!runState) {
+            runState = true;
+            gameThread = new Thread(this);
+            gameThread.start();
+        }
+    }
+
+    public synchronized void StopGame() {
+        if (runState) {
+            runState = false;
+            try {
+                gameThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
