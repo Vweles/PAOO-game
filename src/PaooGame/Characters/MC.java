@@ -36,6 +36,15 @@ public class MC extends Entity {
         collisionOn = false;
         checker.checkTile(this);
 
+            if (checker.isOnHazard(this)) {
+                this.hp -= 15;
+                if (this.hp < 0) this.hp = 0;
+
+
+                this.speed = 1;
+            }
+
+
         if (!collisionOn && isMoving) {
             if (directie.equals("up")) y -= speed;
             if (directie.equals("down")) y += speed;

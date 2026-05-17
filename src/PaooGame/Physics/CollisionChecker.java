@@ -69,4 +69,21 @@ public class CollisionChecker {
         // ID-uri solide: 1 (Abis), 6 (Wall/Cracks), 144-173 (Eldritch Corp)
         return (id == 1 || id == 6 || (id >= 144 && id <= 197));
     }
+
+    // În PaooGame.Physics.CollisionChecker.java
+
+    public boolean isOnHazard(Entity entity) {
+        // Calculăm centrul entității pentru a vedea exact pe ce tile stă
+        int centerX = (int) (entity.x + entity.solidArea.x + entity.solidArea.width / 2);
+        int centerY = (int) (entity.y + entity.solidArea.y + entity.solidArea.height / 2);
+
+        int col = centerX / Tile.TILE_WIDTH;
+        int row = centerY / Tile.TILE_HEIGHT;
+
+        // Verificăm ID-ul pe ambele straturi (ID 5 = WaterTile)
+        int tileIdL0 = map.getTileID(col, row, 0);
+        int tileIdL1 = map.getTileID(col, row, 1);
+
+        return (tileIdL0 == 5 || tileIdL1 == 5);
+    }
 }

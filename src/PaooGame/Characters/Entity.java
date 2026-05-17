@@ -7,17 +7,16 @@ public abstract class Entity {
     public String nume;
     public int str, inte, agi, tho;
     public int hp, mana;
+    public int maxHp, maxMana; // ADĂUGAT: Pentru barele de stare din HUD
     public double att_spd;
     public int att_dmg_hit, spell_dmg;
     public int attacks, limbs_at, lvl, Limbs_normal;
     public int x, y;
     public int speed;
 
-
-    public Rectangle solidArea = new Rectangle(0, 0, 48, 48); // Zona de coliziune (ajustabilă)
+    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public boolean collisionOn = false;
     public String directie = "down";
-
 
     public static final int R_ARM = 0, L_ARM = 1, R_LEG = 2, L_LEG = 3, HEAD = 4;
     public boolean[] limbsStatus = {true, true, true, true, true};
@@ -35,6 +34,10 @@ public abstract class Entity {
         this.y = y;
         this.speed = speed;
         updateStatsAfterInjury();
+
+        // Salvăm valorile inițiale ca fiind cele maxime
+        this.maxHp = this.hp;
+        this.maxMana = this.mana;
     }
 
     public void loseLimb(int limbIndex) {
