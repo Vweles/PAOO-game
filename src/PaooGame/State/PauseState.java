@@ -32,6 +32,7 @@ public class PauseState extends State {
 
             DatabaseManager.save(
                     backState.getPlayer().hp,
+                    backState.getPlayer().mana,
                     backState.getPlayer().x,
                     backState.getPlayer().y,
                     level

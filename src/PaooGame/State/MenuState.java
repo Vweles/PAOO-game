@@ -4,6 +4,7 @@ import PaooGame.KeyImput.InputTaste;
 import PaooGame.KeyImput.MouseManager;
 import PaooGame.KeyImput.UIImageButton;
 import PaooGame.Graphics.ImageLoader;
+import PaooGame.Database.DatabaseManager;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -11,39 +12,58 @@ import java.util.ArrayList;
 public class MenuState extends State {
     private MouseManager mouseManager;
     private State cutsceneState;
+    private PlayState playState;
+    private State optionsState;
     private BufferedImage background, uiSheet;
     private ArrayList<UIImageButton> buttons;
 
-    public MenuState(InputTaste keyInput, MouseManager mouseManager, State cutsceneState) {
+    public MenuState(InputTaste keyInput, MouseManager mouseManager, State cutsceneState, PlayState playState) {
         this.mouseManager = mouseManager;
         this.cutsceneState = cutsceneState;
+        this.playState = playState;
         buttons = new ArrayList<>();
 
         background = ImageLoader.LoadImage("/textures/MeniulPrincipal.png");
-        uiSheet = ImageLoader.LoadImage("/textures/Butoanele.png");
+        // Încărcăm noua ta imagine curățată de text
+        uiSheet = ImageLoader.LoadImage("/textures/Butoane2.png");
 
         if (uiSheet != null) {
-
+            // Decupăm pe baza grilei tale originale din primul rând
             int btnWidth = uiSheet.getWidth() / 2 - 40;
             int btnHeight = uiSheet.getHeight() / 3 - 30;
 
-
-            BufferedImage[] startImgs = {
+            // Salvăm cele două variații goale (Normal stânga, Hover dreapta cu mână)
+            BufferedImage[] blankTemplate = {
                     uiSheet.getSubimage(20, 15, btnWidth, btnHeight),
                     uiSheet.getSubimage(uiSheet.getWidth() / 2 + 10, 15, btnWidth, btnHeight)
             };
-            buttons.add(new UIImageButton(250, 200, 300, 80, startImgs, () -> {
-                State.SetState(cutsceneState);
+
+            // Generăm cele 4 butoane utilizând aceleași fundaluri, dar cu texte diferite
+            // 1. START GAME (Y: 150)
+            buttons.add(new UIImageButton(250, 150, 300, 80, blankTemplate, "START GAME", () -> {
+                State.SetState(this.cutsceneState);
                 this.mouseManager.leftPressed = false;
             }));
 
+            // 2. CONTINUE GAME (Y: 250) - Conectat direct la Database
+            buttons.add(new UIImageButton(250, 250, 300, 80, blankTemplate, "CONTINUE GAME", () -> {
+                DatabaseManager.load(this.playState);
+                this.mouseManager.leftPressed = false;
+            }));
 
-            BufferedImage[] exitImgs = {
-                    uiSheet.getSubimage(20, 15 + (btnHeight + 30) * 2, btnWidth, btnHeight),
-                    uiSheet.getSubimage(uiSheet.getWidth() / 2 + 10, 15 + (btnHeight + 30) * 2, btnWidth, btnHeight)
-            };
-            buttons.add(new UIImageButton(250, 400, 300, 80, exitImgs, () -> System.exit(0)));
+            // 3. OPTIONS (Y: 350) - Trimite către selectorul de nivele
+            buttons.add(new UIImageButton(250, 350, 300, 80, blankTemplate, "OPTIONS", () -> {
+                if (optionsState != null) State.SetState(optionsState);
+                this.mouseManager.leftPressed = false;
+            }));
+
+            // 4. EXIT (Y: 450)
+            buttons.add(new UIImageButton(250, 450, 300, 80, blankTemplate, "EXIT", () -> System.exit(0)));
         }
+    }
+
+    public void setOptionsState(State optState) {
+        this.optionsState = optState;
     }
 
     @Override
@@ -56,6 +76,8 @@ public class MenuState extends State {
     @Override
     public void Draw(Graphics g) {
         if (background != null) g.drawImage(background, 0, 0, 800, 600, null);
-        for (UIImageButton btn : buttons) btn.Draw(g);
+        for (UIImageButton btn : buttons) {
+            btn.Draw(g);
+        }
     }
 }

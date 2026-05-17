@@ -6,7 +6,6 @@ import PaooGame.Characters.MC;
 import PaooGame.Items.Iteme;
 import PaooGame.Items.ItemGenerator;
 import PaooGame.Map.Map;
-import PaooGame.Characters.MC;
 import PaooGame.KeyImput.InputTaste;
 import PaooGame.KeyImput.MouseManager;
 import PaooGame.Graphics.GameCamera;
@@ -30,27 +29,24 @@ public class PlayState extends State {
     private CollisionChecker checker;
     private HUD hud;
 
-    // 1. ADĂUGĂ aceastâ variabilâ membrâ pentru a păstra referința
-    private InputTaste keyInput;
     private int width, height;
     private Random random = new Random();
     private int currentLevelNo = 1;
 
-    public PlayState(InputTaste keyInput, int width, int height) {
-        // 2. SALVEAZĂ referința primită în variabila clasei
-        this.keyInput = keyInput;
-
-        camera = new GameCamera(width, height);
     public PlayState(InputTaste keyInput, MouseManager mouseManager, int width, int height) {
         this.keyInput = keyInput;
         this.mouseManager = mouseManager;
         this.width = width;
         this.height = height;
+
         this.camera = new GameCamera(width, height);
-        currentMap = new Map("/LVL1/layout1final.txt", "/LVL1/laye2final.txt", "/LVL1/layer3Lvl1.txt");
+        this.currentMap = new Map("/LVL1/layout1final.txt", "/LVL1/laye2final.txt", "/LVL1/layer3Lvl1.txt");
         this.checker = new CollisionChecker(currentMap);
         this.currentLevelNo = 1;
-        player = new MC("Erou", 100, 100, keyInput);
+
+        this.player = new MC("Erou", 200, 200, keyInput);
+        this.hud = new HUD(player);
+
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
@@ -58,18 +54,13 @@ public class PlayState extends State {
         return keyInput;
     }
 
-        checker = new CollisionChecker(currentMap);
-
-        // Folosești parametrul sau variabila salvată, ambele funcționează aici
-        player = new MC("Erou", 200, 200, keyInput);
-        hud = new HUD(player);
     public MC getPlayer() {
         return player;
     }
 
+
     @Override
     public void Update() {
-        // REPARAT: Am schimbat din Update(...) in update(...) cu 'u' mic
         player.update(checker);
 
         if (player.hp <= 0) {
@@ -193,34 +184,33 @@ public class PlayState extends State {
 
     public MouseManager getMouseManager() {
         return mouseManager;
-        camera.centerOnEntity(player);
-
-        // 3. ACUM poți folosi keyInput aici pentru a schimba starea
-        if (player.hp <= 0) {
-            State.SetState(new GameOverState(keyInput));
-        }
     }
 
     @Override
     public void Draw(Graphics g) {
-        currentMap.Draw(g, camera);
-        player.Draw(g, (int)camera.getxOffset(), (int)camera.getyOffset());
-        hud.draw(g);
         if (currentMap == null) {
             drawPlaceholder(g);
         } else {
+
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, width, height);
+
             int xOff = (int)camera.getxOffset();
             int yOff = (int)camera.getyOffset();
+
             currentMap.Draw(g, camera);
+
             if (companion != null) companion.draw(g, xOff, yOff);
             ArrayList<Entity> enemies = currentMap.getEnemies();
             if (enemies != null) {
                 for (Entity e : enemies) e.draw(g, xOff, yOff);
             }
+
             player.draw(g, xOff, yOff);
             drawCircularFog(g);
+            if (hud != null) {
+                hud.draw(g);
+            }
         }
     }
 
@@ -278,7 +268,7 @@ public class PlayState extends State {
         return currentLevelNo;
     }
 
-    public void loadGameData(int hp, float x, float y, int level) {
+    public void loadGameData(int hp, int mana, float x, float y, int level) {
         this.currentLevelNo = level;
         if(level == 1) {
             this.currentMap = new Map("/LVL1/layout1final.txt", "/LVL1/laye2final.txt", "/LVL1/layer3Lvl1.txt");

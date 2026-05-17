@@ -43,17 +43,16 @@ public class Game implements Runnable {
 
 
         playState = new PlayState(keyInput, mouseManager, wnd.GetWndWidth(), wnd.GetWndHeight());
-
-
         cutsceneState = new CutsceneState(keyInput, (PlayState)playState);
 
+        // Cream meniul principal FARA sa ii dam OptionsState inca (pentru a evita o bucla)
+        menuState = new MenuState(keyInput, mouseManager, cutsceneState, (PlayState)playState);
 
-        menuState = new MenuState(keyInput, mouseManager, cutsceneState);
-
+        // Cream OptionsState si i-l transmitem Meniului Principal
+        State optionsState = new OptionsState(mouseManager, (PlayState)playState, menuState);
+        ((MenuState)menuState).setOptionsState(optionsState);
 
         introState = new IntroState(keyInput, wnd.GetWndWidth(), wnd.GetWndHeight(), menuState);
-
-
         State.SetState(introState);
     }
 

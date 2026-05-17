@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class BattleState extends State {
+    private PaooGame.Graphics.HUD hud;
     private MC player;
     private Entity enemy;
     private InputTaste keyInput;
@@ -49,6 +50,9 @@ public class BattleState extends State {
         this.isBossLvl3 = (enemy instanceof Bossfinal);
         player.updateStatsAfterInjury();
         enemy.updateStatsAfterInjury();
+
+        this.hud = new PaooGame.Graphics.HUD(player);
+
         InitButtons();
         determineFirstTurn();
     }
@@ -320,6 +324,9 @@ public class BattleState extends State {
         } else {
             g.setColor(Color.LIGHT_GRAY);
             g.drawString("Inamicul isi pregateste mutarea...", 40, 445);
+        }
+        if (hud != null) {
+            hud.draw(g);
         }
     }
 }

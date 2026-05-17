@@ -14,7 +14,7 @@ public class MC extends Entity {
     private PaooGame.Items.Inventory inventory;
 
     public MC(String NUME, int x, int y, InputTaste keyInput) {
-        super(NUME, 70000, 10, 60, 60, 4, 2, 1, x, y, 4);
+        super(NUME, 80, 10, 60, 60, 4, 2, 1, x, y, 4);
         this.keyInput = keyInput;
         this.inventory = new PaooGame.Items.Inventory(this);
 
@@ -26,8 +26,6 @@ public class MC extends Entity {
     public void setX(int x) { this.x = x; }
     public void setY(int y) { this.y = y; }
 
-    // REPARAT: Numele metodei trebuie să fie EXACT "update" (cu 'u' mic)
-    // dacă așa este în clasa Entity, și trebuie să aibă @Override
     @Override
     public void update(CollisionChecker checker) {
         boolean isMoving = false;
@@ -44,14 +42,6 @@ public class MC extends Entity {
 
         collisionOn = false;
         checker.checkTile(this);
-
-            if (checker.isOnHazard(this)) {
-                this.hp -= 15;
-                if (this.hp < 0) this.hp = 0;
-
-
-                this.speed = 1;
-            }
 
 
         if (!collisionOn && isMoving) {

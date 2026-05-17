@@ -7,7 +7,7 @@ public abstract class Entity {
     public String nume;
     public int str, inte, agi, tho;
     public int hp, mana;
-    public int maxHp, maxMana; // ADĂUGAT: Pentru barele de stare din HUD
+    public int maxHp, maxMana;
     public double att_spd;
     public int att_dmg_hit, spell_dmg;
     public int attacks, limbs_at, lvl, Limbs_normal;
@@ -33,11 +33,12 @@ public abstract class Entity {
         this.x = x;
         this.y = y;
         this.speed = speed;
-        updateStatsAfterInjury();
+        this.maxHp = 100 + 10 * this.tho + 5 * this.str;
+        this.maxMana = 150 + 15 * this.inte;
+        this.hp = this.maxHp;
+        this.mana = this.maxMana;
 
-        // Salvăm valorile inițiale ca fiind cele maxime
-        this.maxHp = this.hp;
-        this.maxMana = this.mana;
+        updateStatsAfterInjury();
     }
 
     public void loseLimb(int limbIndex) {
@@ -48,14 +49,20 @@ public abstract class Entity {
     }
 
     public void updateStatsAfterInjury() {
-        this.hp = 100 + 10 * this.tho + 5 * this.str;
-        this.mana = 150 + 15 * this.inte;
+        this.maxHp = 100 + 10 * this.tho + 5 * this.str;
+        this.maxMana = 150 + 15 * this.inte;
+
+        if (this.hp > this.maxHp) this.hp = this.maxHp;
+        if (this.mana > this.maxMana) this.mana = this.maxMana;
+
         if (!limbsStatus[R_LEG] || !limbsStatus[L_LEG]) this.speed = Math.max(1, (1 + agi) / 5);
         if (!limbsStatus[R_LEG] && !limbsStatus[L_LEG]) this.speed = 1;
         if (!limbsStatus[HEAD]) this.hp = 0;
+
         int activeArms = 0;
         if(limbsStatus[R_ARM]) activeArms++;
         if(limbsStatus[L_ARM]) activeArms++;
+
         this.att_dmg_hit = this.str + activeArms;
         this.spell_dmg = this.inte * 5;
         this.att_spd = this.agi * 5 + this.Limbs_normal;
