@@ -22,7 +22,7 @@ public class WinState extends State {
             int my = mouseManager.getMouseY();
 
             if (exitButton.contains(mx, my)) {
-                System.exit(0); // Închide jocul sau te trimite la meniu
+                System.exit(0);
             }
             mouseManager.setLeftPressed(false);
         }
@@ -47,11 +47,11 @@ public class WinState extends State {
         g.setFont(new Font("Arial", Font.PLAIN, 16));
         g.setColor(Color.LIGHT_GRAY);
         g.drawString("Statistici Finale ale Eroului:", 300, 280);
-        g.drawString("Strength (STR): " + player.str, 320, 310);
-        g.drawString("Intelligence (INT): " + player.inte, 320, 330);
-        g.drawString("Agility (AGI): " + player.agi, 320, 350);
-        g.drawString("Toughness (THO): " + player.tho, 320, 370);
 
+        g.drawString("Strength (STR): " + player.getStr(), 320, 310);
+        g.drawString("Intelligence (INT): " + player.getInte(), 320, 330);
+        g.drawString("Agility (AGI): " + player.getAgi(), 320, 350);
+        g.drawString("Toughness (THO): " + player.getTho(), 320, 370);
 
         g.setColor(Color.DARK_GRAY);
         g.fillRect(exitButton.x, exitButton.y, exitButton.width, exitButton.height);

@@ -1,6 +1,5 @@
 package PaooGame.State;
 
-import PaooGame.KeyImput.InputTaste;
 import PaooGame.KeyImput.MouseManager;
 import PaooGame.KeyImput.UIImageButton;
 import java.awt.*;
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 public class OptionsState extends State {
     private MouseManager mouseManager;
     private PlayState playState;
-    private State backState; // Meniul principal
+    private State backState;
     private ArrayList<UIImageButton> buttons;
 
     public OptionsState(MouseManager mouseManager, PlayState playState, State backState) {
@@ -18,26 +17,35 @@ public class OptionsState extends State {
         this.backState = backState;
         buttons = new ArrayList<>();
 
-        // Butoane simple desenate din cod pentru selectia nivelului
+
         buttons.add(new UIImageButton(250, 150, 300, 60, null, () -> {
-            playState.loadGameData(playState.getPlayer().maxHp, playState.getPlayer().maxMana, 100, 100, 1);
+            playState.loadGameData(
+                    playState.getPlayer().getMaxHp(),
+                    playState.getPlayer().getMaxMana(),
+                    100, 100, 1
+            );
         }));
+
         buttons.add(new UIImageButton(250, 250, 300, 60, null, () -> {
             playState.goToLevel2();
         }));
+
         buttons.add(new UIImageButton(250, 350, 300, 60, null, () -> {
             playState.goToLevel3();
         }));
+
         buttons.add(new UIImageButton(250, 480, 300, 60, null, () -> {
-            State.SetState(backState); // Inapoi la meniu
-            this.mouseManager.leftPressed = false;
+            State.SetState(backState);
+
+            this.mouseManager.setLeftPressed(false);
         }));
     }
 
     @Override
     public void Update() {
+
         for (UIImageButton btn : buttons) {
-            btn.Update(mouseManager.mouseX, mouseManager.mouseY, mouseManager.leftPressed);
+            btn.Update(mouseManager.getMouseX(), mouseManager.getMouseY(), mouseManager.isLeftPressed());
         }
     }
 
@@ -56,10 +64,13 @@ public class OptionsState extends State {
         for (int i = 0; i < buttons.size(); i++) {
             UIImageButton btn = buttons.get(i);
             g.setColor(btn.isHovering() ? Color.YELLOW : Color.DARK_GRAY);
-            // Accesam variabilele private prin reflexie sau pur si simplu desenam peste coordonate
-            g.fillRect(250, 150 + (i * (i==3 ? 130 : 100)), 300, 60);
+
+
+            int yPos = 150 + (i * (i == 3 ? 130 : 100));
+            g.fillRect(250, yPos, 300, 60);
+
             g.setColor(Color.BLACK);
-            g.drawString(labels[i], 300, 185 + (i * (i==3 ? 130 : 100)));
+            g.drawString(labels[i], 300, yPos + 35);
         }
     }
 }

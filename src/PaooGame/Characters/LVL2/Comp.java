@@ -16,38 +16,34 @@ public class Comp extends Npc {
     private final int DISTANTA_STOP = 50;
 
     public Comp(String NUME, int x, int y, Entity player) {
-
         super(NUME, 50, 50, 50, 50, 4, 2, 1, x, y, 3, true, true, false, "Guardian", true);
         this.target = player;
-        this.solidArea = new Rectangle(12, 24, 24, 20);
+        this.getSolidArea().setBounds(12, 24, 24, 20);
     }
 
     @Override
     public void update(CollisionChecker checker) {
         boolean isMoving = false;
-
-
-        float diffX = target.x - this.x;
-        float diffY = target.y - this.y;
+        float diffX = target.getX() - this.getX();
+        float diffY = target.getY() - this.getY();
         double distanta = Math.sqrt(diffX * diffX + diffY * diffY);
 
         if (distanta > DISTANTA_STOP) {
             isMoving = true;
-
             if (Math.abs(diffX) > Math.abs(diffY)) {
-                directie = (diffX > 0) ? "right" : "left";
+                this.setDirectie((diffX > 0) ? "right" : "left");
             } else {
-                directie = (diffY > 0) ? "down" : "up";
+                this.setDirectie((diffY > 0) ? "down" : "up");
             }
 
-            collisionOn = false;
+            this.setCollisionOn(false);
             checker.checkTile(this);
 
-            if (!collisionOn) {
-                if (directie.equals("up")) y -= speed;
-                if (directie.equals("down")) y += speed;
-                if (directie.equals("left")) x -= speed;
-                if (directie.equals("right")) x += speed;
+            if (!this.isCollisionOn()) {
+                if (this.getDirectie().equals("up")) this.setY(this.getY() - this.getSpeed());
+                if (this.getDirectie().equals("down")) this.setY(this.getY() + this.getSpeed());
+                if (this.getDirectie().equals("left")) this.setX(this.getX() - this.getSpeed());
+                if (this.getDirectie().equals("right")) this.setX(this.getX() + this.getSpeed());
             }
         }
 
@@ -66,16 +62,15 @@ public class Comp extends Npc {
     @Override
     public void draw(Graphics g, int cameraX, int cameraY) {
         BufferedImage frame = null;
-
-        if (directie.equals("up")) frame = Assets.walkUp[animIndex % 3];
-        else if (directie.equals("down")) frame = Assets.walkDown[animIndex % 3];
-        else if (directie.equals("left")) frame = Assets.walkLeft[animIndex % 3];
-        else if (directie.equals("right")) frame = Assets.walkRight[animIndex % 3];
+        if (this.getDirectie().equals("up")) frame = Assets.walkUp[animIndex % 3];
+        else if (this.getDirectie().equals("down")) frame = Assets.walkDown[animIndex % 3];
+        else if (this.getDirectie().equals("left")) frame = Assets.walkLeft[animIndex % 3];
+        else if (this.getDirectie().equals("right")) frame = Assets.walkRight[animIndex % 3];
 
         if (frame != null) {
-            g.drawImage(frame, x - cameraX, y - cameraY, 48, 48, null);
+            g.drawImage(frame, this.getX() - cameraX, this.getY() - cameraY, 48, 48, null);
             g.setColor(Color.WHITE);
-            g.drawString(this.nume, x - cameraX + 5, y - cameraY - 5);
+            g.drawString(this.getNume(), this.getX() - cameraX + 5, this.getY() - cameraY - 5);
         }
     }
 }

@@ -138,10 +138,10 @@ public class InventoryState extends State {
         g.setColor(Color.YELLOW);
         g.setFont(new Font("Arial", Font.BOLD, 16));
         g.drawString("STATS TOTALE:", 580, 80);
-        g.drawString("STR: " + p.str, 580, 105);
-        g.drawString("INT: " + p.inte, 580, 130);
-        g.drawString("AGI: " + p.agi, 580, 155);
-        g.drawString("THO: " + p.tho, 580, 180);
+        g.drawString("STR: " + p.getStr(), 580, 105);
+        g.drawString("INT: " + p.getInte(), 580, 130);
+        g.drawString("AGI: " + p.getAgi(), 580, 155);
+        g.drawString("THO: " + p.getTho(), 580, 180);
     }
 
     private void drawEquippedItem(Graphics g, Rectangle r, Iteme item, String label) {

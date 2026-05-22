@@ -1,11 +1,13 @@
 package PaooGame.Characters.LVL3;
 
 import PaooGame.Characters.Entity;
+import PaooGame.Characters.MC;
 import PaooGame.Characters.MinionBANANA;
 import PaooGame.Graphics.Assets;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Minionlvl3 extends MinionBANANA {
 
@@ -14,30 +16,35 @@ public class Minionlvl3 extends MinionBANANA {
 
     public Minionlvl3(int x, int y) {
         super("Sclavuletul lui Emilian", 25, 45, 30, 35, 2, 1, 15, x, y, 3, false, true, true, "Liar Mimic", false, 90, 25);
-        this.hp = 450;
+        this.setHp(450);
     }
 
     public void distragereMincinoasa(Entity target) {
         if (!iluzieActiva) {
-            this.magicPower += 5;
+
+            this.setMagicPower(this.getMagicPower() + 5);
             this.iluzieActiva = true;
         }
-        int damage = this.spell_dmg + (this.inte / 2);
-        target.hp -= damage;
+
+        int damage = this.getSpellDmg() + (this.getInte() / 2);
+        target.setHp(target.getHp() - damage);
     }
 
     @Override
     public void castSpell(Entity target) {
-        int totalDamage = this.spell_dmg + this.magicPower;
-        target.hp -= totalDamage;
-        this.mana -= 10;
+
+        int totalDamage = this.getSpellDmg() + this.getMagicPower();
+        target.setHp(target.getHp() - totalDamage);
+
+
+        this.setMana(this.getMana() - 10);
     }
 
     public void lingusireZeiasca() {
-        if (this.hp < 100) {
+        if (this.getHp() < 100) {
             this.iluzieActiva = false;
-            this.speed += 1;
-            this.mana += 20;
+            this.setSpeed(this.getSpeed() + 1);
+            this.setMana(this.getMana() + 20);
         }
     }
 
@@ -50,12 +57,22 @@ public class Minionlvl3 extends MinionBANANA {
     public void draw(Graphics g, int xOffset, int yOffset) {
         if (iluzieActiva) {
             g.setColor(new Color(138, 43, 226, 120));
-            g.drawOval(x - xOffset - 5, y - yOffset - 5, 42, 42);
+
+            g.drawOval(this.getX() - xOffset - 5, this.getY() - yOffset - 5, 42, 42);
         }
 
         BufferedImage img = (Assets.lvl3minion != null) ? Assets.lvl3minion : Assets.minion_full;
         if (img != null) {
-            g.drawImage(img, x - xOffset, y - yOffset, 32, 32, null);
+            g.drawImage(img, this.getX() - xOffset, this.getY() - yOffset, 32, 32, null);
         }
+    }
+    @Override
+    public void performTurn(MC player) {
+        if (new Random().nextBoolean()) {
+            this.distragereMincinoasa(player);
+        } else {
+            this.castSpell(player);
+        }
+        this.lingusireZeiasca();
     }
 }

@@ -4,7 +4,8 @@ import PaooGame.Characters.Entity;
 import PaooGame.Characters.LVL2.Comp;
 import PaooGame.Characters.MC;
 import PaooGame.Items.Iteme;
-import PaooGame.Items.ItemGenerator;
+import PaooGame.Managers.CombatManager;
+import PaooGame.Managers.LevelManager;
 import PaooGame.Map.Map;
 import PaooGame.KeyImput.InputTaste;
 import PaooGame.KeyImput.MouseManager;
@@ -12,9 +13,7 @@ import PaooGame.Graphics.GameCamera;
 import PaooGame.Physics.CollisionChecker;
 import PaooGame.Graphics.HUD;
 import java.awt.Graphics;
-import PaooGame.Graphics.Assets;
 import PaooGame.Tiles.Tile;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -28,6 +27,8 @@ public class PlayState extends State {
     private GameCamera camera;
     private CollisionChecker checker;
     private HUD hud;
+    private CombatManager combatManager;
+    private LevelManager levelManager; // Referință către manager
 
     private int width, height;
     private Random random = new Random();
@@ -40,106 +41,105 @@ public class PlayState extends State {
         this.height = height;
 
         this.camera = new GameCamera(width, height);
-        this.currentMap = new Map("/LVL1/layout1final.txt", "/LVL1/laye2final.txt", "/LVL1/layer3Lvl1.txt");
-        this.checker = new CollisionChecker(currentMap);
-        this.currentLevelNo = 1;
+        this.levelManager = new LevelManager(this);
 
         this.player = new MC("Erou", 200, 200, keyInput);
         this.hud = new HUD(player);
+        this.combatManager = new CombatManager(this);
+
+
+        this.currentLevelNo = 1;
+        levelManager.loadLevel(currentLevelNo);
 
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
-    public InputTaste getKeyInput() {
-        return keyInput;
-    }
 
-    public MC getPlayer() {
-        return player;
-    }
-
+    public InputTaste getKeyInput() { return keyInput; }
+    public MC getPlayer() { return player; }
+    public Map getCurrentMap() { return currentMap; }
+    public void setCurrentMap(Map map) { this.currentMap = map; this.checker = new CollisionChecker(map); }
+    public void setCompanion(Comp comp) { this.companion = comp; }
 
     @Override
     public void Update() {
-        player.update(checker);
 
-        if (player.hp <= 0) {
+        player.update(checker);
+        if (companion != null) companion.update(checker);
+
+
+        if (currentMap != null) {
+            camera.centerOnEntity(player);
+            camera.checkBlankSpace(currentMap.getWidth() * Tile.TILE_WIDTH,
+                    currentMap.getHeight() * Tile.TILE_HEIGHT);
+        }
+
+
+        if (player.getHp() <= 0) {
             State.SetState(new LoseState(this, keyInput, mouseManager));
             return;
         }
 
-        if(currentMap != null) {
-            camera.centerOnEntity(player);
-            camera.checkBlankSpace(currentMap.getWidth() * Tile.TILE_WIDTH, currentMap.getHeight() * Tile.TILE_HEIGHT);
-        }
 
-        if (companion != null) companion.update(checker);
-
-        if (keyInput.esc) {
-            State.SetState(new PauseState(this, keyInput, mouseManager));
-            keyInput.esc = false;
-            return;
-        }
-
-        if (keyInput.inv) {
-            State.SetState(new InventoryState(this));
-            keyInput.inv = false;
-            return;
-        }
-
-        if (keyInput.o_tasta) {
-            keyInput.up = false; keyInput.down = false; keyInput.left = false; keyInput.right = false;
-            keyInput.o_tasta = false;
-            State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
-            return;
-        }
+        if (keyInput.esc) { State.SetState(new PauseState(this, keyInput, mouseManager)); keyInput.esc = false; return; }
+        if (keyInput.inv) { State.SetState(new InventoryState(this)); keyInput.inv = false; return; }
 
         handlePotions();
 
-        if(currentMap != null) {
-            ArrayList<Entity> enemies = currentMap.getEnemies();
-            if (enemies != null) {
-                Rectangle pRect = new Rectangle((int)player.x + player.solidArea.x, (int)player.y + player.solidArea.y, player.solidArea.width, player.solidArea.height);
+        if (currentMap != null) {
+            combatManager.checkAndTriggerCombat(player, currentMap.getEnemies());
+        }
+    }
 
-                for (int i = 0; i < enemies.size(); i++) {
-                    Entity e = enemies.get(i);
-                    e.update(checker);
-                    Rectangle eRect = new Rectangle((int)e.x + e.solidArea.x, (int)e.y + e.solidArea.y, e.solidArea.width, e.solidArea.height);
+    @Override
+    public void Draw(Graphics g) {
 
-                    if (pRect.intersects(eRect)) {
-                        generateLootDrop();
-                        keyInput.up = false; keyInput.down = false; keyInput.left = false; keyInput.right = false;
-                        enemies.remove(i);
-                        State.SetState(new BattleState(keyInput, mouseManager, player, e, this));
-                        return;
-                    }
-                }
-            }
+        if (currentMap != null) {
+            currentMap.draw(g, camera);
+        }
+
+        if (player != null) {
+            player.draw(g, (int)camera.getxOffset(), (int)camera.getyOffset());
+        }
+
+        if (companion != null) {
+            companion.draw(g, (int)camera.getxOffset(), (int)camera.getyOffset());
+        }
+
+        if (hud != null) {
+            hud.draw(g);
         }
     }
 
     private void handlePotions() {
+
         if (keyInput.h_pot) {
             Iteme potiune = findSpecificPotion(Iteme.ItemType.POTION_HP);
             if (potiune != null) {
-                player.hp += potiune.bonusStr;
-                int maxHP = 100 + 10 * player.tho + 5 * player.str;
-                if (player.hp > maxHP) player.hp = maxHP;
+                player.setHp(player.getHp() + potiune.bonusStr);
+                int maxHP = 100 + 10 * player.getTho() + 5 * player.getStr();
+                if (player.getHp() > maxHP) player.setHp(maxHP);
                 player.getInventory().bag.remove(potiune);
-                System.out.println("Consumat: " + potiune.name + ". HP actual: " + player.hp);
-            } else {
-                System.out.println("Nu mai ai potiuni de HP!");
             }
             keyInput.h_pot = false;
         }
+
+
         if (keyInput.m_pot) {
             Iteme potiune = findSpecificPotion(Iteme.ItemType.POTION_MANA);
             if (potiune != null) {
-                player.mana += potiune.bonusStr;
-                int maxMana = 150 + 15 * player.inte;
-                if (player.mana > maxMana) player.mana = maxMana;
+
+                player.setMana(player.getMana() + potiune.bonusStr);
+
+
+                int maxMana = 150 + 15 * player.getInte();
+
+                if (player.getMana() > maxMana) {
+                    player.setMana(maxMana);
+                }
+
                 player.getInventory().bag.remove(potiune);
-                System.out.println("Consumat: " + potiune.name + ". Mana actuala: " + player.mana);
+                System.out.println("Consumat: " + potiune.name + ". Mana actuala: " + player.getMana());
             } else {
                 System.out.println("Nu mai ai potiuni de Mana!");
             }
@@ -147,141 +147,43 @@ public class PlayState extends State {
         }
     }
 
-    private Iteme findSpecificPotion(Iteme.ItemType type) {
-        for (Iteme i : player.getInventory().bag) {
-            if (i.type == type && i.name.contains("Mica")) return i;
-        }
-        for (Iteme i : player.getInventory().bag) {
-            if (i.type == type && i.name.contains("Medie")) return i;
-        }
-        for (Iteme i : player.getInventory().bag) {
-            if (i.type == type && i.name.contains("Mare")) return i;
-        }
-        return null;
-    }
-
-    private Iteme findItemInBag(Iteme.ItemType type) {
-        for (Iteme i : player.getInventory().bag) {
-            if (i.type == type) return i;
-        }
-        return null;
-    }
-
-    private void generateLootDrop() {
-        Iteme.ItemType[] dropTypes = {
-                Iteme.ItemType.HEAD, Iteme.ItemType.CHEST, Iteme.ItemType.HANDS,
-                Iteme.ItemType.BOOTS, Iteme.ItemType.CLOAK, Iteme.ItemType.RING
-        };
-        Iteme.ItemType selectedEquipType = dropTypes[random.nextInt(dropTypes.length)];
-        Iteme dropEquip = ItemGenerator.generateRandomItem(selectedEquipType);
-        player.getInventory().bag.add(dropEquip);
-        System.out.println("[DROP] Ai obtinut echipament: " + dropEquip.name);
-        Iteme.ItemType selectedPotionType = random.nextBoolean() ? Iteme.ItemType.POTION_HP : Iteme.ItemType.POTION_MANA;
-        Iteme dropPotion = ItemGenerator.generateRandomItem(selectedPotionType);
-        player.getInventory().bag.add(dropPotion);
-        System.out.println("[DROP EXTRA] Inamicul a lasat si o potiune: " + dropPotion.name);
-    }
-
-    public MouseManager getMouseManager() {
-        return mouseManager;
-    }
-
-    @Override
-    public void Draw(Graphics g) {
-        if (currentMap == null) {
-            drawPlaceholder(g);
-        } else {
-
-            g.setColor(Color.BLACK);
-            g.fillRect(0, 0, width, height);
-
-            int xOff = (int)camera.getxOffset();
-            int yOff = (int)camera.getyOffset();
-
-            currentMap.Draw(g, camera);
-
-            if (companion != null) companion.draw(g, xOff, yOff);
-            ArrayList<Entity> enemies = currentMap.getEnemies();
-            if (enemies != null) {
-                for (Entity e : enemies) e.draw(g, xOff, yOff);
-            }
-
-            player.draw(g, xOff, yOff);
-            drawCircularFog(g);
-            if (hud != null) {
-                hud.draw(g);
-            }
-        }
-    }
-
-    private void drawPlaceholder(Graphics g) {
-        g.setColor(Color.RED);
-        g.fillRect(0, 0, width, height);
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("ZONA NEINCARCATA", 250, 300);
-        player.draw(g, 0, 0);
-    }
-
-    private void drawCircularFog(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        int screenX = (int)(player.x + 16 - camera.getxOffset());
-        int screenY = (int)(player.y + 16 - camera.getyOffset());
-        RadialGradientPaint p = new RadialGradientPaint(
-                Math.max(1, screenX), Math.max(1, screenY), 280f,
-                new float[]{0.0f, 0.7f, 1.0f},
-                new Color[]{ new Color(0,0,0,0), new Color(0,0,0,180), Color.BLACK }
-        );
-        g2d.setPaint(p);
-        g2d.fillRect(0, 0, width, height);
-    }
 
     public void goToLevel2() {
-        Assets.InitLevel2();
-        Tile.InitLevel2Tiles();
-        this.currentMap = new Map("/LVL2/layer1_formatat.txt", "/LVL2/layer2_formatat.txt", "/LVL2/layer3_formatat.txt");
-        this.checker = new CollisionChecker(currentMap);
-        this.player.x = 200;
-        this.player.y = 200;
-        this.companion = new Comp("Guardian", 250, 250, player);
         this.currentLevelNo = 2;
+        levelManager.loadLevel(currentLevelNo);
+        this.player.setX(200);
+        this.player.setY(200);
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
     public void goToLevel3() {
-        Assets.InitLevel3();
-        Tile.InitLevel3Tiles();
-        this.currentMap = new Map("/LVL3/lvl3final_layer1.txt", "/LVL3/lvl3final_layer2.txt", "/LVL3/lvl3final_layer3.txt");
-        this.checker = new CollisionChecker(currentMap);
-        this.player.x = 100;
-        this.player.y = 100;
-        this.companion = null;
         this.currentLevelNo = 3;
+        levelManager.loadLevel(currentLevelNo);
+        this.player.setX(100);
+        this.player.setY(100);
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
-    }
-
-    public void triggerWinState() {
-        State.SetState(new WinState(this, mouseManager));
-    }
-
-    public int getCurrentLevelNo() {
-        return currentLevelNo;
     }
 
     public void loadGameData(int hp, int mana, float x, float y, int level) {
         this.currentLevelNo = level;
-        if(level == 1) {
-            this.currentMap = new Map("/LVL1/layout1final.txt", "/LVL1/laye2final.txt", "/LVL1/layer3Lvl1.txt");
-            this.companion = null;
-        }
-        if(level == 2) goToLevel2();
-        if(level == 3) goToLevel3();
-        this.checker = new CollisionChecker(currentMap);
-        this.player.hp = hp;
+        levelManager.loadLevel(level);
+        this.player.setHp(hp);
+        this.player.setMana(mana);
         this.player.setX((int)x);
         this.player.setY((int)y);
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
-    public Map getCurrentMap() { return currentMap; }
+
+    public MouseManager getMouseManager() {
+        return mouseManager;
+    }
+
+
+
+    public int getCurrentLevelNo() { return currentLevelNo; }
+    public void triggerWinState() { State.SetState(new WinState(this, mouseManager)); }
+    private Iteme findSpecificPotion(Iteme.ItemType type) {  return null; }
+    private void drawCircularFog(Graphics g) {  }
+    private void drawPlaceholder(Graphics g) {  }
 }

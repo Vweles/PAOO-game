@@ -14,10 +14,12 @@ public class GameCamera {
 
     public void centerOnEntity(MC e) {
 
-        xOffset = e.getX() - (wndWidth / (2 * zoom)) + 16;
-        yOffset = e.getY() - (wndHeight / (2 * zoom)) + 16;
-    }
+        float entityCenterX = e.getX() + (e.getSolidArea().width / 2.0f);
+        float entityCenterY = e.getY() + (e.getSolidArea().height / 2.0f);
 
+        xOffset = entityCenterX - (wndWidth / (2 * zoom));
+        yOffset = entityCenterY - (wndHeight / (2 * zoom));
+    }
     public void checkBlankSpace(int worldWidth, int worldHeight) {
 
         float viewWidth = wndWidth / zoom;

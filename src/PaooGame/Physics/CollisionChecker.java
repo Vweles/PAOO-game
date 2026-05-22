@@ -13,74 +13,67 @@ public class CollisionChecker {
 
     public void checkTile(Entity entity) {
 
-        int entityLeftX = (int) (entity.x + entity.solidArea.x);
-        int entityRightX = (int) (entity.x + entity.solidArea.x + entity.solidArea.width);
-        int entityTopY = (int) (entity.y + entity.solidArea.y);
-        int entityBottomY = (int) (entity.y + entity.solidArea.y + entity.solidArea.height);
+        int entityLeftX = (int) (entity.getX() + entity.getSolidArea().x);
+        int entityRightX = (int) (entity.getX() + entity.getSolidArea().x + entity.getSolidArea().width);
+        int entityTopY = (int) (entity.getY() + entity.getSolidArea().y);
+        int entityBottomY = (int) (entity.getY() + entity.getSolidArea().y + entity.getSolidArea().height);
 
         int col1, col2, row1, row2;
 
-        switch (entity.directie) {
+        switch (entity.getDirectie()) {
             case "up":
-                row1 = (entityTopY - entity.speed) / Tile.TILE_HEIGHT;
+                row1 = (entityTopY - entity.getSpeed()) / Tile.TILE_HEIGHT;
                 col1 = entityLeftX / Tile.TILE_WIDTH;
                 col2 = entityRightX / Tile.TILE_WIDTH;
                 if (checkSolid(col1, row1) || checkSolid(col2, row1)) {
-                    entity.collisionOn = true;
+                    entity.setCollisionOn(true);
                 }
                 break;
             case "down":
-                row1 = (entityBottomY + entity.speed) / Tile.TILE_HEIGHT;
+                row1 = (entityBottomY + entity.getSpeed()) / Tile.TILE_HEIGHT;
                 col1 = entityLeftX / Tile.TILE_WIDTH;
                 col2 = entityRightX / Tile.TILE_WIDTH;
                 if (checkSolid(col1, row1) || checkSolid(col2, row1)) {
-                    entity.collisionOn = true;
+                    entity.setCollisionOn(true);
                 }
                 break;
             case "left":
-                col1 = (entityLeftX - entity.speed) / Tile.TILE_WIDTH;
+                col1 = (entityLeftX - entity.getSpeed()) / Tile.TILE_WIDTH;
                 row1 = entityTopY / Tile.TILE_HEIGHT;
                 row2 = entityBottomY / Tile.TILE_HEIGHT;
                 if (checkSolid(col1, row1) || checkSolid(col1, row2)) {
-                    entity.collisionOn = true;
+                    entity.setCollisionOn(true);
                 }
                 break;
             case "right":
-                col1 = (entityRightX + entity.speed) / Tile.TILE_WIDTH;
+                col1 = (entityRightX + entity.getSpeed()) / Tile.TILE_WIDTH;
                 row1 = entityTopY / Tile.TILE_HEIGHT;
                 row2 = entityBottomY / Tile.TILE_HEIGHT;
                 if (checkSolid(col1, row1) || checkSolid(col1, row2)) {
-                    entity.collisionOn = true;
+                    entity.setCollisionOn(true);
                 }
                 break;
         }
     }
 
-
     private boolean checkSolid(int col, int row) {
-
         int tileIdL0 = map.getTileID(col, row, 0);
         int tileIdL1 = map.getTileID(col, row, 1);
-
         return isTileSolid(tileIdL0) || isTileSolid(tileIdL1);
     }
 
     private boolean isTileSolid(int id) {
-
-        return (id == 1 || id == 6 || (id >= 144 && id <= 197 || id ==13 || id ==257));
+        return (id == 1 || id == 6 || (id >= 144 && id <= 197 || id == 13 || id == 257));
     }
 
-    // În PaooGame.Physics.CollisionChecker.java
-
     public boolean isOnHazard(Entity entity) {
-        // Calculăm centrul entității pentru a vedea exact pe ce tile stă
-        int centerX = (int) (entity.x + entity.solidArea.x + entity.solidArea.width / 2);
-        int centerY = (int) (entity.y + entity.solidArea.y + entity.solidArea.height / 2);
+
+        int centerX = (int) (entity.getX() + entity.getSolidArea().x + entity.getSolidArea().width / 2);
+        int centerY = (int) (entity.getY() + entity.getSolidArea().y + entity.getSolidArea().height / 2);
 
         int col = centerX / Tile.TILE_WIDTH;
         int row = centerY / Tile.TILE_HEIGHT;
 
-        // Verificăm ID-ul pe ambele straturi (ID 5 = WaterTile)
         int tileIdL0 = map.getTileID(col, row, 0);
         int tileIdL1 = map.getTileID(col, row, 1);
 

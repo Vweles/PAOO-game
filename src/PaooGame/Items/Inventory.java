@@ -12,10 +12,11 @@ public class Inventory {
 
     public Inventory(MC player) {
         this.player = player;
-        this.baseStr = player.str;
-        this.baseInte = player.inte;
-        this.baseAgi = player.agi;
-        this.baseTho = player.tho;
+        // Folosim getterele pentru a inițializa valorile de bază
+        this.baseStr = player.getStr();
+        this.baseInte = player.getInte();
+        this.baseAgi = player.getAgi();
+        this.baseTho = player.getTho();
     }
 
     public void applyTotalStats() {
@@ -24,21 +25,28 @@ public class Inventory {
         Iteme[] equipped = {head, chest, hands, boots, cloak, ring};
         for (Iteme i : equipped) {
             if (i != null) {
-                bonusStr += i.bonusStr; bonusInte += i.bonusInte;
-                bonusAgi += i.bonusAgi; bonusTho += i.bonusTho;
+                bonusStr += i.bonusStr;
+                bonusInte += i.bonusInte;
+                bonusAgi += i.bonusAgi;
+                bonusTho += i.bonusTho;
             }
         }
         for (Iteme art : artifacts) {
             if (art != null) {
-                bonusStr += art.bonusStr; bonusInte += art.bonusInte;
-                bonusAgi += art.bonusAgi; bonusTho += art.bonusTho;
+                bonusStr += art.bonusStr;
+                bonusInte += art.bonusInte;
+                bonusAgi += art.bonusAgi;
+                bonusTho += art.bonusTho;
             }
         }
 
-        player.str = baseStr + bonusStr;
-        player.inte = baseInte + bonusInte;
-        player.agi = baseAgi + bonusAgi;
-        player.tho = baseTho + bonusTho;
+        // Folosim setterele pentru a actualiza statisticile player-ului
+        player.setStr(baseStr + bonusStr);
+        player.setInte(baseInte + bonusInte);
+        player.setAgi(baseAgi + bonusAgi);
+        player.setTho(baseTho + bonusTho);
+
+        // Apelăm metoda de actualizare după modificarea statisticilor
         player.updateStatsAfterInjury();
     }
 
@@ -70,7 +78,6 @@ public class Inventory {
             ring = item;
         }
         else if (item.type == Iteme.ItemType.ARTIFACT) {
-
             boolean slotGasit = false;
             for (int i = 0; i < artifacts.length; i++) {
                 if (artifacts[i] == null) {
@@ -84,7 +91,6 @@ public class Inventory {
                 artifacts[0] = item;
             }
         }
-
 
         applyTotalStats();
     }

@@ -31,12 +31,15 @@ public class PauseState extends State {
             int level = backState.getCurrentLevelNo();
 
             DatabaseManager.save(
-                    backState.getPlayer().hp,
-                    backState.getPlayer().mana,
-                    backState.getPlayer().x,
-                    backState.getPlayer().y,
+                    backState.getPlayer().getHp(),
+                    backState.getPlayer().getMana(),
+                    backState.getPlayer().getX(),
+                    backState.getPlayer().getY(),
                     level
             );
+
+
+
             keyInput.s_key = false;
         }
 
@@ -44,7 +47,7 @@ public class PauseState extends State {
         if (keyInput.l_key) {
             DatabaseManager.load(backState);
             keyInput.l_key = false;
-            State.SetState(backState); // Revenim în joc după load
+            State.SetState(backState);
         }
     }
 

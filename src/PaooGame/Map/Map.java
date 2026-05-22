@@ -1,5 +1,6 @@
 package PaooGame.Map;
 
+import PaooGame.Characters.EntityFactory;
 import PaooGame.Characters.LVL3.Bossfinal;
 import PaooGame.Characters.LVL3.Minionlvl3;
 import PaooGame.Tiles.Tile;
@@ -76,13 +77,11 @@ public class Map {
     private void spawnEntity(int id, int x, int y) {
         int posX = x * Tile.TILE_WIDTH;
         int posY = y * Tile.TILE_HEIGHT;
-        if (id == 241) enemies.add(new Silvani(posX, posY));
-        else if (id == 244) enemies.add(new Boss(posX, posY));
-        else if (id == 741) enemies.add(new mn(posX, posY));
-        else if (id == 773) enemies.add(new Bossss(posX, posY));
-        else if (id == 98) enemies.add(new Minionlvl3(posX, posY));
-        else if (id == 267) enemies.add(new Bossfinal(posX, posY));
 
+        Entity e = EntityFactory.createEntity(id, posX, posY);
+        if (e != null) {
+            enemies.add(e);
+        }
     }
 
     public int getTileID(int x, int y, int layer) {
@@ -91,7 +90,7 @@ public class Map {
         return layers[layer][y][x];
     }
 
-    public void Draw(Graphics g, GameCamera camera) {
+    public void draw(Graphics g, GameCamera camera) {
 
         int xStart = (int) Math.max(0, camera.getxOffset() / Tile.TILE_WIDTH);
         int xEnd = (int) Math.min(width, (camera.getxOffset() + 800) / Tile.TILE_WIDTH + 1);
@@ -109,6 +108,10 @@ public class Map {
                     }
                 }
             }
+        }
+        for (Entity e : enemies) {
+
+            e.draw(g, (int)camera.getxOffset(), (int)camera.getyOffset());
         }
     }
 
