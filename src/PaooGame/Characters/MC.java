@@ -16,7 +16,7 @@ public class MC extends Entity {
 
     public MC(String nume, int x, int y, InputTaste keyInput) {
 
-        super(nume, 80, 10, 60, 60, 4, 2, 1, x, y, 4);
+        super(nume, 8000, 1000, 600, 600, 4, 2, 1, x, y, 4);
         this.keyInput = keyInput;
         this.inventory = new Inventory(this);
 

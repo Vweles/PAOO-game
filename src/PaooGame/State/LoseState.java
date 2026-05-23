@@ -31,7 +31,7 @@ public class LoseState extends State {
 
 
             if (retryButton.contains(mx, my)) {
-                DatabaseManager.load(playState);
+                DatabaseManager.load(1,playState);
                 State.SetState(playState);
                 mouseManager.setLeftPressed(false);
                 return;

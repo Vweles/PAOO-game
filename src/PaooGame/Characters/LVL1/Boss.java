@@ -17,13 +17,13 @@ public class Boss extends Gru {
         super(
                 "Morbryx, Herald of Rot",
                 20, 16, 10, 25, 6, 4, 5, x, y, 1,
-                false, false, true, "Champion of the Rotten God", true, 20, 15
+                false, false, true, "Champion of the Rotten God", true, 1, 15
         );
 
         this.setHp(500);
-        this.setMana(150); // Folosim setter
-        this.setAttDmgHit(35); // Folosim setter
-        this.setSpellDmg(30); // Folosim setter
+        this.setMana(150);
+        this.setAttDmgHit(35);
+        this.setSpellDmg(30);
         this.corruptionPower = 25;
         this.poisonDamage = 12;
         this.phaseTwo = false;
@@ -62,7 +62,7 @@ public class Boss extends Gru {
     public void checkPhase() {
         if (this.getHp() <= 250 && !phaseTwo) {
             phaseTwo = true;
-            this.setRage(this.getRage() + 25); // Presupunând că ai getter/setter pentru rage în Gru
+            this.setRage(this.getRage() + 25);
             this.setAttDmgHit(this.getAttDmgHit() + 20);
             this.setSpellDmg(this.getSpellDmg() + 15);
             this.corruptionPower += 20;

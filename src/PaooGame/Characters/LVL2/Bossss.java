@@ -15,12 +15,12 @@ public class Bossss extends Gru {
     private int myMaxHp = 5000;
 
     public Bossss(int x, int y) {
-        super("Morbryx, Flacara Infernului", 80, 50, 30, 100, 2, 2, 20, x, y, 2, false, true, false, "Champion of Hell", false, 100, 0);
+        super("Morbryx, Flacara Infernului", 80, 50, 30, 100, 2, 2, 20, x, y, 2, false, true, false, "Champion of Hell", false, 2, 0);
         this.setHp(5000);
     }
 
     public void infernoBlast(Entity target) {
-        // Accesăm rage prin getRage() din Gru și str prin getStr() din Entity
+
         if (this.getRage() >= 20) {
             int damage = (this.getStr() + this.getRage()) * 3;
             target.setHp(target.getHp() - damage);
@@ -37,7 +37,7 @@ public class Bossss extends Gru {
 
     @Override
     public void specialAttack(Entity target) {
-        // Folosim getAttDmgHit() din Entity și getRage() din Gru
+
         int damage = (int)(this.getAttDmgHit() * 2.5 + (this.getRage() * 1.5));
         target.setHp(target.getHp() - damage);
     }

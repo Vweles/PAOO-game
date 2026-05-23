@@ -9,7 +9,7 @@ public class IntroState extends State {
     private boolean fadingIn = true;
     private InputTaste keyInput;
     private int wndWidth, wndHeight;
-    private State nextState; // Va fi MenuState
+    private State nextState;
 
     public IntroState(InputTaste keyInput, int wndWidth, int wndHeight, State nextState) {
         this.keyInput = keyInput;

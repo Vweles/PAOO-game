@@ -12,7 +12,6 @@ public class Inventory {
 
     public Inventory(MC player) {
         this.player = player;
-        // Folosim getterele pentru a inițializa valorile de bază
         this.baseStr = player.getStr();
         this.baseInte = player.getInte();
         this.baseAgi = player.getAgi();
@@ -40,13 +39,13 @@ public class Inventory {
             }
         }
 
-        // Folosim setterele pentru a actualiza statisticile player-ului
+
         player.setStr(baseStr + bonusStr);
         player.setInte(baseInte + bonusInte);
         player.setAgi(baseAgi + bonusAgi);
         player.setTho(baseTho + bonusTho);
 
-        // Apelăm metoda de actualizare după modificarea statisticilor
+
         player.updateStatsAfterInjury();
     }
 

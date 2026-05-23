@@ -3,6 +3,7 @@ package PaooGame.Map;
 import PaooGame.Characters.EntityFactory;
 import PaooGame.Characters.LVL3.Bossfinal;
 import PaooGame.Characters.LVL3.Minionlvl3;
+import PaooGame.Physics.CollisionChecker;
 import PaooGame.Tiles.Tile;
 import PaooGame.Graphics.GameCamera;
 import PaooGame.Characters.Entity;
@@ -112,6 +113,11 @@ public class Map {
         for (Entity e : enemies) {
 
             e.draw(g, (int)camera.getxOffset(), (int)camera.getyOffset());
+        }
+    }
+    public void updateEnemies(CollisionChecker checker) {
+        for (Entity e : enemies) {
+            e.update(checker);
         }
     }
 

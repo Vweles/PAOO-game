@@ -7,7 +7,7 @@ import java.io.File;
 public class CutsceneState extends State {
     private PlayState playState;
     private InputTaste keyInput;
-    private int stage = 0; // 0 = asteapta pornire v1, 1 = v1 pornit, 2 = asteapta v2, 3 = v2 pornit
+    private int stage = 0;
 
     public CutsceneState(InputTaste keyInput, PlayState playState) {
         this.keyInput = keyInput;

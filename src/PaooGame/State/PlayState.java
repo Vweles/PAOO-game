@@ -3,6 +3,7 @@ package PaooGame.State;
 import PaooGame.Characters.Entity;
 import PaooGame.Characters.LVL2.Comp;
 import PaooGame.Characters.MC;
+import PaooGame.Database.DatabaseManager;
 import PaooGame.Items.Iteme;
 import PaooGame.Managers.CombatManager;
 import PaooGame.Managers.LevelManager;
@@ -13,6 +14,8 @@ import PaooGame.Graphics.GameCamera;
 import PaooGame.Physics.CollisionChecker;
 import PaooGame.Graphics.HUD;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RadialGradientPaint;
 import PaooGame.Tiles.Tile;
 import java.awt.*;
 import java.util.ArrayList;
@@ -28,7 +31,7 @@ public class PlayState extends State {
     private CollisionChecker checker;
     private HUD hud;
     private CombatManager combatManager;
-    private LevelManager levelManager; // Referință către manager
+    private LevelManager levelManager;
 
     private int width, height;
     private Random random = new Random();
@@ -47,7 +50,6 @@ public class PlayState extends State {
         this.hud = new HUD(player);
         this.combatManager = new CombatManager(this);
 
-
         this.currentLevelNo = 1;
         levelManager.loadLevel(currentLevelNo);
 
@@ -63,10 +65,14 @@ public class PlayState extends State {
 
     @Override
     public void Update() {
+        if (currentMap != null) {
+            currentMap.updateEnemies(checker);
+        }
 
         player.update(checker);
-        if (companion != null) companion.update(checker);
-
+        if (companion != null) {
+            companion.update(checker);
+        }
 
         if (currentMap != null) {
             camera.centerOnEntity(player);
@@ -74,15 +80,22 @@ public class PlayState extends State {
                     currentMap.getHeight() * Tile.TILE_HEIGHT);
         }
 
-
         if (player.getHp() <= 0) {
             State.SetState(new LoseState(this, keyInput, mouseManager));
             return;
         }
 
+        if (keyInput.esc) {
+            State.SetState(new PauseState(this, keyInput, mouseManager));
+            keyInput.esc = false;
+            return;
+        }
 
-        if (keyInput.esc) { State.SetState(new PauseState(this, keyInput, mouseManager)); keyInput.esc = false; return; }
-        if (keyInput.inv) { State.SetState(new InventoryState(this)); keyInput.inv = false; return; }
+        if (keyInput.inv) {
+            State.SetState(new InventoryState(this));
+            keyInput.inv = false;
+            return;
+        }
 
         handlePotions();
 
@@ -105,6 +118,9 @@ public class PlayState extends State {
         if (companion != null) {
             companion.draw(g, (int)camera.getxOffset(), (int)camera.getyOffset());
         }
+
+
+        drawCircularFog(g);
 
         if (hud != null) {
             hud.draw(g);
@@ -130,7 +146,6 @@ public class PlayState extends State {
             if (potiune != null) {
 
                 player.setMana(player.getMana() + potiune.bonusStr);
-
 
                 int maxMana = 150 + 15 * player.getInte();
 
@@ -174,16 +189,35 @@ public class PlayState extends State {
         State.SetState(new ObiectivState(this, keyInput, mouseManager, currentLevelNo));
     }
 
-
     public MouseManager getMouseManager() {
         return mouseManager;
     }
 
-
-
     public int getCurrentLevelNo() { return currentLevelNo; }
+
     public void triggerWinState() { State.SetState(new WinState(this, mouseManager)); }
-    private Iteme findSpecificPotion(Iteme.ItemType type) {  return null; }
-    private void drawCircularFog(Graphics g) {  }
-    private void drawPlaceholder(Graphics g) {  }
+
+    private Iteme findSpecificPotion(Iteme.ItemType type) {
+
+        return null;
+    }
+
+
+    private void drawCircularFog(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+
+
+        int screenX = (int)(player.getX() + 16 - camera.getxOffset());
+        int screenY = (int)(player.getY() + 16 - camera.getyOffset());
+
+
+        RadialGradientPaint p = new RadialGradientPaint(
+                Math.max(1, screenX), Math.max(1, screenY), 280f,
+                new float[]{0.0f, 0.7f, 1.0f},
+                new Color[]{ new Color(0,0,0,0), new Color(0,0,0,180), Color.BLACK }
+        );
+
+        g2d.setPaint(p);
+        g2d.fillRect(0, 0, width, height);
+    }
 }

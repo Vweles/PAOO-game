@@ -4,6 +4,7 @@ import PaooGame.Characters.Entity;
 import PaooGame.Characters.MC;
 import PaooGame.Characters.MinionBANANA;
 import PaooGame.Graphics.Assets;
+import PaooGame.Physics.CollisionChecker;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -16,14 +17,14 @@ public class mn extends MinionBANANA {
     private int myMaxHp = 350;
 
     public mn(int x, int y) {
-        super("Vicar of Borrowed Glory", 20, 40, 25, 30, 2, 1, 10, x, y, 3, false, true, true, "Soul Mimic", false, 80, 15);
+
+        super("Vicar of Borrowed Glory", 20, 40, 25, 30, 2, 1, 10, x, y, 3, false, true, true, "Soul Mimic", false, 5, 15);
         this.setHp(350);
     }
 
     public void stealGlory(Entity target) {
         if (!hasStolenGlory) {
             this.temporarySteal = target.getStr() / 4;
-
             this.setSpellDmg(this.getSpellDmg() + temporarySteal);
             this.hasStolenGlory = true;
             System.out.println(this.getNume() + " a furat gloria! Spell DMG crescut.");
@@ -34,10 +35,7 @@ public class mn extends MinionBANANA {
     public void castSpell(Entity target) {
         int targetMaxHp = 100 + 10 * target.getTho() + 5 * target.getStr();
         int bonusDamage = (target.getHp() > targetMaxHp / 2) ? 20 : 0;
-
-
         int totalDamage = this.getSpellDmg() + bonusDamage;
-
         target.setHp(target.getHp() - totalDamage);
     }
 
@@ -49,7 +47,8 @@ public class mn extends MinionBANANA {
     }
 
     @Override
-    public void update(PaooGame.Physics.CollisionChecker checker) {
+    public void update(CollisionChecker checker) {
+
         super.update(checker);
     }
 

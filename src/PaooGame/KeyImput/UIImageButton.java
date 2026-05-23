@@ -13,9 +13,9 @@ public class UIImageButton {
     private Rectangle bounds;
     private boolean hovering = false;
     private Runnable onClick;
-    private String text = ""; // ADĂUGAT: Salvează textul butonului
+    private String text = "";
 
-    // Constructorul original (rămâne pentru compatibilitate în caz că e folosit în altă parte)
+
     public UIImageButton(int x, int y, int width, int height, BufferedImage[] images, Runnable onClick) {
         this.x = x;
         this.y = y;
@@ -27,7 +27,7 @@ public class UIImageButton {
         bounds = new Rectangle(x, y, width, height);
     }
 
-    // ADĂUGAT: Constructor nou care acceptă și textul dinamic
+
     public UIImageButton(int x, int y, int width, int height, BufferedImage[] images, String text, Runnable onClick) {
         this(x, y, width, height, images, onClick);
         this.text = text;
@@ -46,7 +46,7 @@ public class UIImageButton {
     }
 
     public void Draw(Graphics g) {
-        // Desenează fundalul grafic de piatră din Butoane2.png
+
         if (images != null && images[0] != null) {
             if (hovering && images.length > 1 && images[1] != null) {
                 g.drawImage(images[1], x, y, width, height, null);
@@ -55,11 +55,11 @@ public class UIImageButton {
             }
         }
 
-        // ADĂUGAT: Desenează textul aliniat perfect pe centrul butonului
+
         if (text != null && !text.isEmpty()) {
             g.setFont(new Font("Arial", Font.BOLD, 22));
 
-            // Schimbă culoarea textului în funcție de starea mouse-ului (Roșu pe hover, Alb în rest)
+
             g.setColor(hovering ? Color.RED : Color.WHITE);
 
             FontMetrics fm = g.getFontMetrics();

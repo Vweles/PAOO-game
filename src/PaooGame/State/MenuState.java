@@ -24,40 +24,34 @@ public class MenuState extends State {
         buttons = new ArrayList<>();
 
         background = ImageLoader.LoadImage("/textures/MeniulPrincipal.png");
-        // Încărcăm noua ta imagine curățată de text
         uiSheet = ImageLoader.LoadImage("/textures/Butoane2.png");
 
         if (uiSheet != null) {
-            // Decupăm pe baza grilei tale originale din primul rând
             int btnWidth = uiSheet.getWidth() / 2 - 40;
             int btnHeight = uiSheet.getHeight() / 3 - 30;
 
-            // Salvăm cele două variații goale (Normal stânga, Hover dreapta cu mână)
             BufferedImage[] blankTemplate = {
                     uiSheet.getSubimage(20, 15, btnWidth, btnHeight),
                     uiSheet.getSubimage(uiSheet.getWidth() / 2 + 10, 15, btnWidth, btnHeight)
             };
 
-            // Generăm cele 4 butoane utilizând aceleași fundaluri, dar cu texte diferite
-            // 1. START GAME (Y: 150)
             buttons.add(new UIImageButton(250, 150, 300, 80, blankTemplate, "START GAME", () -> {
                 State.SetState(this.cutsceneState);
                 this.mouseManager.leftPressed = false;
             }));
 
-            // 2. CONTINUE GAME (Y: 250) - Conectat direct la Database
+
             buttons.add(new UIImageButton(250, 250, 300, 80, blankTemplate, "CONTINUE GAME", () -> {
-                DatabaseManager.load(this.playState);
+                DatabaseManager.load(1, this.playState);
+                State.SetState(this.playState);
                 this.mouseManager.leftPressed = false;
             }));
 
-            // 3. OPTIONS (Y: 350) - Trimite către selectorul de nivele
             buttons.add(new UIImageButton(250, 350, 300, 80, blankTemplate, "OPTIONS", () -> {
                 if (optionsState != null) State.SetState(optionsState);
                 this.mouseManager.leftPressed = false;
             }));
 
-            // 4. EXIT (Y: 450)
             buttons.add(new UIImageButton(250, 450, 300, 80, blankTemplate, "EXIT", () -> System.exit(0)));
         }
     }

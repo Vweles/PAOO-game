@@ -31,45 +31,54 @@ public class Inamic extends Npc {
         target.setHp(target.getHp() - this.getAttDmgHit());
     }
 
-    @Override
-    public void update(CollisionChecker checker) {
 
-        PaooGame.State.State currentState = PaooGame.State.State.GetState();
-
+        @Override
+        public void update(CollisionChecker checker) {
+            System.out.println("DEBUG: Update inamic apelat pentru " + this.getNume()); // <--- VEZI DACĂ APARE ÎN CONSOLĂ
+            PaooGame.State.State currentState = PaooGame.State.State.GetState();
         if (currentState instanceof PaooGame.State.PlayState) {
-            PaooGame.State.PlayState playState = (PaooGame.State.PlayState) currentState;
-            Entity player = playState.getPlayer();
-
+            Entity player = ((PaooGame.State.PlayState) currentState).getPlayer();
             if (player != null) {
-                int diffX = player.getX() - this.getX();
-                int diffY = player.getY() - this.getY();
-                double distanta = Math.sqrt(diffX * diffX + diffY * diffY);
 
-                int tileuriDetectie = Math.max(2, this.agresivitate - 2);
-                int razaDetectiePixeli = tileuriDetectie * 32;
-
-                if (distanta <= razaDetectiePixeli) {
-                    if (Math.abs(diffX) > Math.abs(diffY)) {
-                        this.setDirectie(diffX > 0 ? "right" : "left");
-                    } else {
-                        this.setDirectie(diffY > 0 ? "down" : "up");
-                    }
-                } else {
-                    actionLockCounter++;
-                    if (actionLockCounter >= 120) {
-                        int i = random.nextInt(5);
-                        switch (i) {
-                            case 0: this.setDirectie("up"); break;
-                            case 1: this.setDirectie("down"); break;
-                            case 2: this.setDirectie("left"); break;
-                            case 3: this.setDirectie("right"); break;
-                            case 4: this.setDirectie("idle"); break;
-                        }
-                        actionLockCounter = 0;
-                    }
-                }
+                applyMovementLogic(player, checker);
             }
         }
+    }
+    @Override
+    public void draw(Graphics g, int cameraX, int cameraY) {
+        if (Assets.walkDown != null && Assets.walkDown[0] != null) {
+            g.drawImage(Assets.walkDown[0],
+                    this.getX() - cameraX,
+                    this.getY() - cameraY,
+                    48, 48, null);
+        }
+    }
+    public void processAI(Entity player, CollisionChecker checker) {
+        int diffX = player.getX() - this.getX();
+        int diffY = player.getY() - this.getY();
+        double distanta = Math.sqrt(diffX * diffX + diffY * diffY);
+
+
+        if (distanta <= (this.agresivitate * 32)) {
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                this.setDirectie(diffX > 0 ? "right" : "left");
+            } else {
+                this.setDirectie(diffY > 0 ? "down" : "up");
+            }
+        } else {
+
+            actionLockCounter++;
+            if (actionLockCounter >= 120) {
+                int i = random.nextInt(5);
+                String[] directii = {"up", "down", "left", "right", "idle"};
+                this.setDirectie(directii[i]);
+                actionLockCounter = 0;
+            }
+        }
+    }
+    protected void applyMovementLogic(Entity player, CollisionChecker checker) {
+        processAI(player, checker);
 
         this.setCollisionOn(false);
         checker.checkTile(this);
@@ -81,16 +90,6 @@ public class Inamic extends Npc {
                 case "left":  this.setX(this.getX() - this.getSpeed()); break;
                 case "right": this.setX(this.getX() + this.getSpeed()); break;
             }
-        }
-    }
-
-    @Override
-    public void draw(Graphics g, int cameraX, int cameraY) {
-        if (Assets.walkDown != null && Assets.walkDown[0] != null) {
-            g.drawImage(Assets.walkDown[0],
-                    this.getX() - cameraX,
-                    this.getY() - cameraY,
-                    48, 48, null);
         }
     }
 

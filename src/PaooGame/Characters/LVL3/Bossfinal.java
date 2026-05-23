@@ -15,7 +15,7 @@ public class Bossfinal extends Gru {
     private int myMaxHp = 7000;
 
     public Bossfinal(int x, int y) {
-        super("Campionul lui Emilian", 90, 70, 40, 120, 2, 2, 30, x, y, 2, false, true, false, "Impostor God", false, 120, 0);
+        super("Campionul lui Emilian", 90, 70, 40, 120, 2, 2, 30, x, y, 2, false, true, false, "Impostor God", false, 3, 0);
         this.setHp(7000);
     }
 

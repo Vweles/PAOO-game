@@ -20,7 +20,7 @@ public class EntityManager {
         while (it.hasNext()) {
             Entity e = it.next();
             e.update(checker);
-            // Dacă entitatea a murit, o poți elimina aici
+
             if (e.getHp() <= 0) it.remove();
         }
     }
